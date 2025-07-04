@@ -8,8 +8,21 @@ use App\Infrastructure\Http\ResponseInterface;
 use App\Infrastructure\Security\AppSecurity;
 use App\Infrastructure\Config\EnvLoader;
 
+/**
+ * ExampleController
+ *
+ * This controller provides example endpoints for application information,
+ * data encryption/decryption, and CSRF token generation.
+ */
 class ExampleController
 {
+    /**
+     * Show application information such as name, environment, debug mode, and app key status.
+     *
+     * @param RequestInterface $request The HTTP request object.
+     * @param ResponseInterface $response The HTTP response object.
+     * @return ResponseInterface The response containing application information in JSON format.
+     */
     public function showAppInfo(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $appName = EnvLoader::get('APP_NAME', 'Default App');
@@ -26,6 +39,13 @@ class ExampleController
         return $response->withJson($info);
     }
     
+    /**
+     * Encrypt data using the application key.
+     *
+     * @param RequestInterface $request The HTTP request object containing the data to encrypt.
+     * @param ResponseInterface $response The HTTP response object.
+     * @return ResponseInterface The response containing the encrypted data in JSON format.
+     */
     public function encryptData(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $data = $request->getBody();
@@ -42,6 +62,13 @@ class ExampleController
         }
     }
     
+    /**
+     * Decrypt data using the application key.
+     *
+     * @param RequestInterface $request The HTTP request object containing the encrypted data.
+     * @param ResponseInterface $response The HTTP response object.
+     * @return ResponseInterface The response containing the decrypted data in JSON format.
+     */
     public function decryptData(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $encryptedData = $request->getBody();
@@ -58,6 +85,13 @@ class ExampleController
         }
     }
     
+    /**
+     * Generate a CSRF token.
+     *
+     * @param RequestInterface $request The HTTP request object.
+     * @param ResponseInterface $response The HTTP response object.
+     * @return ResponseInterface The response containing the CSRF token in JSON format.
+     */
     public function generateCsrfToken(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $token = AppSecurity::generateCsrfToken();

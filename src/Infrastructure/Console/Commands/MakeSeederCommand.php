@@ -5,8 +5,16 @@ namespace App\Infrastructure\Console\Commands;
 
 use App\Infrastructure\Console\Command;
 
+/**
+ * MakeSeederCommand class
+ *
+ * This command creates a new seeder class in the application.
+ */
 class MakeSeederCommand extends Command
 {
+    /**
+     * Configure the command options and arguments.
+     */
     protected function configure(): void
     {
         $this->setName('make:seeder');
@@ -14,6 +22,13 @@ class MakeSeederCommand extends Command
         $this->addArgument('name', true, 'The name of the seeder');
     }
 
+    /**
+     * Execute the command to create a new seeder.
+     *
+     * @param array $arguments The command arguments.
+     * @param array $options The command options.
+     * @return int The exit code of the command.
+     */
     protected function execute(array $arguments, array $options): int
     {
         $name = $arguments['name'] ?? null;
@@ -43,6 +58,12 @@ class MakeSeederCommand extends Command
         return 0;
     }
 
+    /**
+     * Format the seeder name to a valid class name.
+     *
+     * @param string $name The raw name of the seeder.
+     * @return string The formatted class name.
+     */
     private function formatClassName(string $name): string
     {
         $name = str_replace(['-', '_'], ' ', $name);
@@ -56,33 +77,39 @@ class MakeSeederCommand extends Command
         return $name;
     }
 
+    /**
+     * Get the template for the seeder class.
+     *
+     * @param string $className The name of the seeder class.
+     * @return string The template content.
+     */
     private function getSeederTemplate(string $className): string
     {
         return <<<PHP
-<?php
-declare(strict_types=1);
+            <?php
+            declare(strict_types=1);
 
-use App\Infrastructure\Persistence\SeederInterface;
-use PDO;
+            use App\Infrastructure\Persistence\SeederInterface;
+            use PDO;
 
-class {$className} implements SeederInterface
-{
-    public function run(PDO \$pdo): void
-    {
-        // TODO: Implement your seeder logic here
-        // Example:
-        // \$stmt = \$pdo->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
-        // \$stmt->execute(['John Doe', 'john@example.com']);
-        // \$stmt->execute(['Jane Smith', 'jane@example.com']);
-        
-        echo "Running {$className}...\n";
-    }
+            class {$className} implements SeederInterface
+            {
+                public function run(PDO \$pdo): void
+                {
+                    // TODO: Implement your seeder logic here
+                    // Example:
+                    // \$stmt = \$pdo->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
+                    // \$stmt->execute(['John Doe', 'john@example.com']);
+                    // \$stmt->execute(['Jane Smith', 'jane@example.com']);
+                    
+                    echo "Running {$className}...\n";
+                }
 
-    public function getName(): string
-    {
-        return '{$className}';
-    }
-}
-PHP;
+                public function getName(): string
+                {
+                    return '{$className}';
+                }
+            }
+        PHP;
     }
 }

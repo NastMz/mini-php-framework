@@ -3,57 +3,100 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Console;
 
+/**
+ * Class Application
+ *
+ * This class represents the console application that manages commands and their execution.
+ */
 class Application
 {
     private array $commands = [];
     private string $name;
     private string $version;
 
+    /**
+     * Application constructor.
+     *
+     * @param string $name The name of the application.
+     * @param string $version The version of the application.
+     */
     public function __construct(string $name = 'MiniFramework CLI', string $version = '1.0.0')
     {
         $this->name = $name;
         $this->version = $version;
     }
 
+    /**
+     * Add a command to the application.
+     *
+     * @param Command $command The command to add.
+     */
     public function addCommand(Command $command): void
     {
         $this->commands[$command->getName()] = $command;
     }
 
+    /**
+     * Run the application with the provided arguments.
+     *
+     * @param array $argv The command line arguments.
+     * @return int The exit code of the application.
+     */
     public function run(array $argv): int
     {
+        $exitCode = 0;
+        
         if (count($argv) < 2) {
             $this->showHelp();
-            return 0;
-        }
-
-        $commandName = $argv[1];
-
-        if ($commandName === 'help' || $commandName === '--help' || $commandName === '-h') {
+        } elseif ($this->isHelpCommand($argv[1])) {
             $this->showHelp();
-            return 0;
-        }
-
-        if ($commandName === 'version' || $commandName === '--version' || $commandName === '-V') {
+        } elseif ($this->isVersionCommand($argv[1])) {
             $this->showVersion();
-            return 0;
-        }
-
-        if (!isset($this->commands[$commandName])) {
-            echo "\033[31mCommand '$commandName' not found.\033[0m\n\n";
+        } elseif (!isset($this->commands[$argv[1]])) {
+            echo "\033[31mCommand '{$argv[1]}' not found.\033[0m\n\n";
             $this->showHelp();
-            return 1;
+            $exitCode = 1;
+        } else {
+            $command = $this->commands[$argv[1]];
+            $exitCode = $command->run($argv);
         }
-
-        $command = $this->commands[$commandName];
-        return $command->run($argv);
+        
+        return $exitCode;
+    }
+    
+    /**
+     * Check if the command is a help command.
+     *
+     * @param string $commandName The command name to check.
+     * @return bool True if it's a help command, false otherwise.
+     */
+    private function isHelpCommand(string $commandName): bool
+    {
+        return in_array($commandName, ['help', '--help', '-h']);
+    }
+    
+    /**
+     * Check if the command is a version command.
+     *
+     * @param string $commandName The command name to check.
+     * @return bool True if it's a version command, false otherwise.
+     */
+    private function isVersionCommand(string $commandName): bool
+    {
+        return in_array($commandName, ['version', '--version', '-V']);
     }
 
+    /**
+     * Show the version of the application.
+     */
     private function showVersion(): void
     {
         echo "{$this->name} {$this->version}\n";
     }
 
+    /**
+     * Show the help message for the application.
+     */
     private function showHelp(): void
     {
         echo "\033[32m{$this->name} {$this->version}\033[0m\n\n";

@@ -5,8 +5,16 @@ namespace App\Infrastructure\Console\Commands;
 
 use App\Infrastructure\Console\Command;
 
+/**
+ * ServeCommand class
+ *
+ * This command starts a simple PHP development server.
+ */
 class ServeCommand extends Command
 {
+    /**
+     * Configure the command options and arguments.
+     */
     protected function configure(): void
     {
         $this->setName('serve');
@@ -15,6 +23,13 @@ class ServeCommand extends Command
         $this->addOption('port', 'p', false, 'The port to serve on (default: 8000)');
     }
 
+    /**
+     * Execute the command to start the development server.
+     *
+     * @param array $arguments The command arguments.
+     * @param array $options The command options.
+     * @return int The exit code of the command.
+     */
     protected function execute(array $arguments, array $options): int
     {
         $host = $options['host'] ?? $options['H'] ?? 'localhost';

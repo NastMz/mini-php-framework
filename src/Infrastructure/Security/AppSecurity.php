@@ -5,10 +5,21 @@ namespace App\Infrastructure\Security;
 
 use App\Infrastructure\Config\EnvLoader;
 
+/**
+ * AppSecurity
+ *
+ * Provides security-related functionalities such as encryption, decryption,
+ * password hashing, and CSRF token generation and verification.
+ */
 class AppSecurity
 {
     private static ?string $key = null;
 
+    /**
+     * Get the application key from environment variables
+     *
+     * @throws \RuntimeException if APP_KEY is not set
+     */
     public static function getKey(): string
     {
         if (self::$key === null) {

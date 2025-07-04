@@ -5,14 +5,27 @@ namespace App\Infrastructure\Console\Commands;
 
 use App\Infrastructure\Console\Command;
 
+/**
+ * Command to list all registered routes in the application.
+ */
 class ListRoutesCommand extends Command
 {
+    /**
+     * Configure the command options and arguments.
+     */
     protected function configure(): void
     {
         $this->setName('route:list');
         $this->setDescription('List all registered routes');
     }
 
+    /**
+     * Execute the command to list all registered routes.
+     *
+     * @param array $arguments The command arguments.
+     * @param array $options The command options.
+     * @return int The exit code of the command.
+     */
     protected function execute(array $arguments, array $options): int
     {
         $routesFile = __DIR__ . '/../../../../bootstrap/routes.php';
@@ -46,6 +59,12 @@ class ListRoutesCommand extends Command
         return 0;
     }
 
+    /**
+     * Parse the routes file to extract route definitions.
+     *
+     * @param string $file The path to the routes file.
+     * @return array An array of route definitions.
+     */
     private function parseRoutesFile(string $file): array
     {
         $content = file_get_contents($file);

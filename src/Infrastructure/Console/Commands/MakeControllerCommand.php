@@ -5,8 +5,17 @@ namespace App\Infrastructure\Console\Commands;
 
 use App\Infrastructure\Console\Command;
 
+/**
+ * MakeControllerCommand
+ *
+ * Command to create a new controller class.
+ * It generates a basic controller template with common methods.
+ */
 class MakeControllerCommand extends Command
 {
+    /**
+     * Configure the command options and arguments.
+     */
     protected function configure(): void
     {
         $this->setName('make:controller');
@@ -14,6 +23,13 @@ class MakeControllerCommand extends Command
         $this->addArgument('name', true, 'The name of the controller');
     }
 
+    /**
+     * Execute the command to create a new controller.
+     *
+     * @param array $arguments The command arguments.
+     * @param array $options The command options.
+     * @return int The exit code of the command.
+     */
     protected function execute(array $arguments, array $options): int
     {
         $name = $arguments['name'] ?? null;
@@ -44,6 +60,12 @@ class MakeControllerCommand extends Command
         return 0;
     }
 
+    /**
+     * Format the controller name to follow naming conventions.
+     *
+     * @param string $name The raw name of the controller.
+     * @return string The formatted class name.
+     */
     private function formatClassName(string $name): string
     {
         $name = str_replace(['-', '_'], ' ', $name);
@@ -57,69 +79,75 @@ class MakeControllerCommand extends Command
         return $name;
     }
 
+    /**
+     * Get the template for the controller class.
+     *
+     * @param string $className The name of the controller class.
+     * @return string The controller class template.
+     */
     private function getControllerTemplate(string $className): string
     {
         return <<<PHP
-<?php
-declare(strict_types=1);
+            <?php
+            declare(strict_types=1);
 
-namespace App\Presentation\Controller;
+            namespace App\Presentation\Controller;
 
-use App\Infrastructure\Http\RequestInterface;
-use App\Infrastructure\Http\ResponseInterface;
+            use App\Infrastructure\Http\RequestInterface;
+            use App\Infrastructure\Http\ResponseInterface;
 
-class {$className}
-{
-    public function index(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-    {
-        // TODO: Implement index method
-        return \$response->withBody('Hello from {$className}!');
-    }
+            class {$className}
+            {
+                public function index(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                {
+                    // TODO: Implement index method
+                    return \$response->withBody('Hello from {$className}!');
+                }
 
-    public function show(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-    {
-        \$id = \$request->getAttribute('id');
-        
-        // TODO: Implement show method
-        return \$response->withBody("Showing resource: {\$id}");
-    }
+                public function show(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                {
+                    \$id = \$request->getAttribute('id');
+                    
+                    // TODO: Implement show method
+                    return \$response->withBody("Showing resource: {\$id}");
+                }
 
-    public function create(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-    {
-        // TODO: Implement create method
-        return \$response->withBody('Create form');
-    }
+                public function create(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                {
+                    // TODO: Implement create method
+                    return \$response->withBody('Create form');
+                }
 
-    public function store(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-    {
-        // TODO: Implement store method
-        return \$response->withBody('Resource created');
-    }
+                public function store(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                {
+                    // TODO: Implement store method
+                    return \$response->withBody('Resource created');
+                }
 
-    public function edit(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-    {
-        \$id = \$request->getAttribute('id');
-        
-        // TODO: Implement edit method
-        return \$response->withBody("Edit form for resource: {\$id}");
-    }
+                public function edit(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                {
+                    \$id = \$request->getAttribute('id');
+                    
+                    // TODO: Implement edit method
+                    return \$response->withBody("Edit form for resource: {\$id}");
+                }
 
-    public function update(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-    {
-        \$id = \$request->getAttribute('id');
-        
-        // TODO: Implement update method
-        return \$response->withBody("Resource {\$id} updated");
-    }
+                public function update(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                {
+                    \$id = \$request->getAttribute('id');
+                    
+                    // TODO: Implement update method
+                    return \$response->withBody("Resource {\$id} updated");
+                }
 
-    public function destroy(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-    {
-        \$id = \$request->getAttribute('id');
-        
-        // TODO: Implement destroy method
-        return \$response->withBody("Resource {\$id} deleted");
-    }
-}
-PHP;
+                public function destroy(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                {
+                    \$id = \$request->getAttribute('id');
+                    
+                    // TODO: Implement destroy method
+                    return \$response->withBody("Resource {\$id} deleted");
+                }
+            }
+        PHP;
     }
 }

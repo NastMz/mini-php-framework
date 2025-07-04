@@ -8,8 +8,16 @@ use App\Infrastructure\DI\Container;
 use App\Infrastructure\Persistence\MigrationRunner;
 use PDO;
 
+/**
+ * Class MigrateCommand
+ *
+ * This command handles database migrations, allowing you to run, rollback, or fresh migrations.
+ */
 class MigrateCommand extends Command
 {
+    /**
+     * Configure the command options and description.
+     */
     protected function configure(): void
     {
         $this->setName('migrate');
@@ -18,6 +26,13 @@ class MigrateCommand extends Command
         $this->addOption('fresh', 'f', false, 'Drop all tables and re-run migrations');
     }
 
+    /**
+     * Execute the command to run migrations.
+     *
+     * @param array $arguments The command arguments.
+     * @param array $options The command options.
+     * @return int The exit code of the command.
+     */
     protected function execute(array $arguments, array $options): int
     {
         try {
