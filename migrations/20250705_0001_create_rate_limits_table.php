@@ -1,7 +1,6 @@
 <?php
 
 use App\Infrastructure\Persistence\MigrationInterface;
-use PDO;
 
 /**
  * Migration to create the rate_limits table.

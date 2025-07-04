@@ -75,7 +75,7 @@ class MigrationRunner
             $this->pdo->beginTransaction();
             $migration->up($this->pdo);
             $stmt = $this->pdo->prepare(
-                "INSERT INTO migrations(name, applied_at) VALUES(:name, NOW());"
+                "INSERT INTO migrations(name, applied_at) VALUES(:name, datetime('now'));"
             );
             $stmt->execute(['name' => $name]);
             $this->pdo->commit();

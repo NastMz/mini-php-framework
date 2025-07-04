@@ -36,8 +36,8 @@ class MigrateCommand extends Command
     protected function execute(array $arguments, array $options): int
     {
         try {
-            $settings = require __DIR__ . '/../../../../config/settings.php';
-            $container = Container::build($settings);
+            // Load the complete bootstrap container
+            $container = require_once __DIR__ . '/../../../../bootstrap/dependencies.php';
             $pdo = $container->get(PDO::class);
             
             $migrationRunner = new MigrationRunner($pdo, __DIR__ . '/../../../../migrations');

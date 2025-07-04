@@ -13,11 +13,11 @@ class DatabaseHelper
     /**
      * Create a PDO connection with automatic SQLite database creation
      */
-    public static function createPdo(array $config): PDO
+    public static function createPdo(array $databaseConfig): PDO
     {
-        $dsn = $config['dsn'];
-        $username = $config['username'] ?? null;
-        $password = $config['password'] ?? null;
+        $dsn = $databaseConfig['dsn'];
+        $username = $databaseConfig['username'] ?? null;
+        $password = $databaseConfig['password'] ?? null;
         
         // Check if it's SQLite and create database file if needed
         if (str_starts_with($dsn, 'sqlite:')) {

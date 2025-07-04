@@ -5,22 +5,22 @@ namespace App\Infrastructure\Console\Commands;
 
 use App\Infrastructure\Console\Command;
 use App\Infrastructure\Database\DatabaseHelper;
-use App\Infrastructure\Config\EnvLoader;
+use PDO;
 
 /**
- * DatabaseInitCommand class
+ * Class DatabaseInitCommand
  *
- * This command initializes the database by creating the necessary file and directories.
+ * This command initializes the database, creating it if it doesn't exist.
  */
 class DatabaseInitCommand extends Command
 {
     /**
-     * Configure the command options and arguments.
+     * Configure the command options and description.
      */
     protected function configure(): void
     {
         $this->setName('db:init');
-        $this->setDescription('Initialize database (create file and directories)');
+        $this->setDescription('Initialize the database (create if not exists)');
     }
 
     /**
@@ -32,37 +32,27 @@ class DatabaseInitCommand extends Command
      */
     protected function execute(array $arguments, array $options): int
     {
-        $this->info('🔧 Initializing database...');
-        
         try {
-            // Load settings
-            $settings = require __DIR__ . '/../../../../config/settings.php';
-            $dbConfig = DatabaseHelper::getConfig($settings['database']);
+            // Load the complete bootstrap container
+            $container = require_once __DIR__ . '/../../../../bootstrap/dependencies.php';
             
-            // Create PDO connection (this will create the database file)
-            $pdo = DatabaseHelper::createPdo($dbConfig);
+            $this->info('Initializing database...');
             
-            // Test connection
-            $stmt = $pdo->query('SELECT 1');
-            if ($stmt->fetch()) {
-                $this->success('✅ Database initialized successfully');
-                
-                // Show database info
-                $dsn = $dbConfig['dsn'];
-                if (str_starts_with($dsn, 'sqlite:')) {
-                    $dbPath = str_replace('sqlite:', '', $dsn);
-                    $this->info("📁 Database location: {$dbPath}");
-                } else {
-                    $this->info("🔗 Database DSN: {$dsn}");
-                }
-                
-                return 0;
+            // Get PDO connection (this will auto-create the database if needed)
+            $pdo = $container->get(PDO::class);
+            $settings = $container->get('settings');
+            
+            if ($pdo) {
+                $this->success('Database initialized successfully');
+                $this->info('Database location: ' . $settings['database']['database']);
             } else {
-                $this->error('❌ Database connection test failed');
+                $this->error('Failed to initialize database');
                 return 1;
             }
+            
+            return 0;
         } catch (\Exception $e) {
-            $this->error('❌ Database initialization failed: ' . $e->getMessage());
+            $this->error('Database initialization failed: ' . $e->getMessage());
             return 1;
         }
     }

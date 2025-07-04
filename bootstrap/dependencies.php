@@ -17,7 +17,7 @@ $settings = require_once __DIR__ . '/config.php';
 $container = Container::build($settings, [
     // SQLite PDO connection with auto-creation
     PDO::class => fn(Container $c) => DatabaseHelper::createPdo(
-        DatabaseHelper::getConfig($c->get('settings')['database'])
+        $c->get('settings')['database']
     ),
     // Database-based rate limiter
     RateLimitService::class => fn(Container $c) => new RateLimitService(
