@@ -14,19 +14,32 @@ $router = $container->get(Router::class);
 use App\Infrastructure\Routing\HttpMethod;
 use App\Infrastructure\Routing\Route;
 use App\Presentation\Controller\HomeController;
+use App\Presentation\Controller\Api\ApiController;
 
-// Register home route
+// Web routes
 $router->add(new Route(
     HttpMethod::GET,
     '/',
     HomeController::class . '::index'
 ));
 
-// Add more test routes
 $router->add(new Route(
     HttpMethod::GET,
     '/test',
     HomeController::class . '::index'
+));
+
+// API routes
+$router->add(new Route(
+    HttpMethod::GET,
+    '/api/status',
+    ApiController::class . '::status'
+));
+
+$router->add(new Route(
+    HttpMethod::GET,
+    '/api/info',
+    ApiController::class . '::info'
 ));
 
 return $router;

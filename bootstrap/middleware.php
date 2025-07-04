@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-// bootstrap/middleware.php
-
 use App\Infrastructure\Middleware\MiddlewareInterface;
 use App\Infrastructure\Middleware\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
@@ -11,22 +9,22 @@ use Psr\Container\ContainerInterface;
 /** @var array<MiddlewareInterface> $middlewares */
 $middlewares = [
     new \App\Infrastructure\Middleware\CorsMiddleware(
-        ['https://your-app.com'],
-        ['GET','POST','OPTIONS'],
-        ['Content-Type','X-CSRF-Token'],
+        ['https://your-app.com', 'http://localhost:3000'], // Add development domains
+        ['GET','POST','PUT','DELETE','OPTIONS'],
+        ['Content-Type','Authorization','X-CSRF-Token'],
         true
     ),
     new \App\Infrastructure\Middleware\SecurityHeadersMiddleware([
-        // CSP seguro sin 'unsafe-inline'
         'Content-Security-Policy' => "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;"
     ]),
 ];
 
-// Example:
-// $middlewares[] = $container->get(App\Infrastructure\Middleware\SessionMiddleware::class);
-// $middlewares[] = $container->get(App\Infrastructure\Middleware\CorsMiddleware::class);
-// $middlewares[] = $container->get(App\Infrastructure\Middleware\SecurityHeadersMiddleware::class);
-// $middlewares[] = $container->get(App\Infrastructure\Middleware\CsrfMiddleware::class);
-// $middlewares[] = $container->get(App\Infrastructure\Middleware\ErrorHandlerMiddleware::class);
+$isWebApp = !str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/api');
+
+if ($isWebApp) {
+    // Only for web applications
+    array_unshift($middlewares, new \App\Infrastructure\Middleware\SessionMiddleware());
+    $middlewares[] = new \App\Infrastructure\Middleware\CsrfMiddleware();
+}
 
 return $middlewares;
