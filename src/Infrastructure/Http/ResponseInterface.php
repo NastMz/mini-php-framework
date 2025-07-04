@@ -44,4 +44,11 @@ interface ResponseInterface
      * @return void
      */
     public function send(): void;
+
+    /**
+     * Get the body content of the response.
+     *
+     * @return string The body content of the response.
+     */
+    public function getBody(): string;
 }

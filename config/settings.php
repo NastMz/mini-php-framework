@@ -9,6 +9,10 @@ return [
         'max_requests' => 60,  // requests per window
         'window_size'  => 60,  // window in seconds
     ],
+    'cache' => [
+        // in seconds
+        'max_age' => 120,
+    ],
     // e.g.
 //    'db' => [
 //        'dsn' => 'mysql:host=127.0.0.1;dbname=mydb;charset=utf8mb4',

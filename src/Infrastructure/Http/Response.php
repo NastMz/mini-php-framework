@@ -67,4 +67,14 @@ class Response implements ResponseInterface
         }
         echo $this->body;
     }
+
+    /**
+     * Get the body content of the response.
+     *
+     * @return string The body content of the response.
+     */
+    public function getBody(): string
+    {
+        return $this->body;
+    }
 }

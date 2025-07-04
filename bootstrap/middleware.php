@@ -20,6 +20,9 @@ $middlewares = [
     new \App\Infrastructure\Middleware\SecurityHeadersMiddleware([
         'Content-Security-Policy' => "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;"
     ]),
+    new \App\Infrastructure\Middleware\HttpCacheMiddleware(
+        (int)($container->get('settings')['cache']['max_age'] ?? 60)
+    ),
 ];
 
 $isWebApp = !str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/api');
