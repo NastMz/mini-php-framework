@@ -4,11 +4,13 @@ declare(strict_types=1);
 use App\Infrastructure\DI\Container;
 use App\Infrastructure\RateLimit\SimpleRateLimitService;
 use App\Infrastructure\RateLimit\RateLimitService;
+use App\Infrastructure\Logging\LoggerInterface;
+use App\Infrastructure\Templating\TemplateEngine;
 use Psr\Container\ContainerInterface;
 use App\Infrastructure\Logging\FileLogger;
 
 /** @var array<string,mixed> $settings */
-$settings = require __DIR__ . '/config.php';
+$settings = require_once __DIR__ . '/config.php';
 
 /** @var ContainerInterface $container */
 $container = Container::build($settings, [
@@ -34,6 +36,10 @@ $container = Container::build($settings, [
         $c->get('settings')['rate_limit']['window_size'] ?? 60
     ),
     LoggerInterface::class => fn() => new FileLogger(__DIR__ . '/../logs/app.log'),
+    TemplateEngine::class => fn() => new TemplateEngine(
+        __DIR__ . '/../views',
+        __DIR__ . '/../storage/cache/templates'
+    ),
 ]);
 
 return $container;
