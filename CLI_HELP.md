@@ -93,6 +93,21 @@ php bin/console key:generate --show
 php bin/console route:list
 ```
 
+### Health Check
+
+```bash
+# Verificar la salud del sistema
+php bin/console health:check
+```
+
+Este comando verifica:
+
+- ✅ Configuración del entorno (.env)
+- ✅ Clave de aplicación (APP_KEY)
+- ✅ Conexión a la base de datos
+- ✅ Directorios de almacenamiento
+- ✅ Sistema de cache
+
 ## Composer Scripts (shortcuts)
 
 ```bash
@@ -129,13 +144,16 @@ php bin/console make:seeder ProductSeeder
 # 4. Ejecutar migración
 php bin/console migrate
 
-# 5. Ejecutar seeder
-php bin/seed
+# 5. Ejecutar seeder (usando el comando correcto)
+php bin/console db-setup
 ```
 
 ### Desarrollo diario
 
 ```bash
+# Verificar que todo esté bien configurado
+php bin/console health:check
+
 # Limpiar cache
 php bin/console cache:clear
 

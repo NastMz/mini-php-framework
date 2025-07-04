@@ -13,6 +13,7 @@ use App\Infrastructure\Middleware\ValidationMiddleware;
 use App\Infrastructure\RateLimit\RateLimitService;
 use App\Infrastructure\Middleware\SessionMiddleware;
 use App\Infrastructure\Middleware\CsrfMiddleware;
+use App\Infrastructure\Logging\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 

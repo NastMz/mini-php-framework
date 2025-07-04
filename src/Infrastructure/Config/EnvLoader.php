@@ -7,7 +7,7 @@ class EnvLoader
 {
     private static array $cache = [];
 
-    public static function load(string $path = null): void
+    public static function load(?string $path = null): void
     {
         if ($path === null) {
             $path = __DIR__ . '/../../../.env';
@@ -43,7 +43,7 @@ class EnvLoader
         }
     }
 
-    public static function get(string $key, string $default = null): ?string
+    public static function get(string $key, ?string $default = null): ?string
     {
         return self::$cache[$key] ?? $_ENV[$key] ?? $default;
     }

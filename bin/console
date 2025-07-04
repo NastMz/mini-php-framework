@@ -2,8 +2,9 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
+use App\Infrastructure\Config\EnvLoader;
 use App\Infrastructure\Console\Application;
 use App\Infrastructure\Console\Commands\MakeControllerCommand;
 use App\Infrastructure\Console\Commands\MakeMigrationCommand;
@@ -14,6 +15,10 @@ use App\Infrastructure\Console\Commands\ServeCommand;
 use App\Infrastructure\Console\Commands\MigrateCommand;
 use App\Infrastructure\Console\Commands\ListRoutesCommand;
 use App\Infrastructure\Console\Commands\GenerateKeyCommand;
+use App\Infrastructure\Console\Commands\HealthCheckCommand;
+
+// Load environment variables
+EnvLoader::load();
 
 $app = new Application('MiniFramework CLI', '1.0.0');
 
@@ -27,6 +32,7 @@ $app->addCommand(new ServeCommand());
 $app->addCommand(new MigrateCommand());
 $app->addCommand(new ListRoutesCommand());
 $app->addCommand(new GenerateKeyCommand());
+$app->addCommand(new HealthCheckCommand());
 
 // Run the application
 exit($app->run($argv));
