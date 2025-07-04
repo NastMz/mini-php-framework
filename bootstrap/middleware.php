@@ -9,7 +9,18 @@ use Psr\Container\ContainerInterface;
 
 /** @var ContainerInterface $container */
 /** @var array<MiddlewareInterface> $middlewares */
-$middlewares = [];
+$middlewares = [
+    new \App\Infrastructure\Middleware\CorsMiddleware(
+        ['https://your-app.com'],
+        ['GET','POST','OPTIONS'],
+        ['Content-Type','X-CSRF-Token'],
+        true
+    ),
+    new \App\Infrastructure\Middleware\SecurityHeadersMiddleware([
+        // CSP seguro sin 'unsafe-inline'
+        'Content-Security-Policy' => "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;"
+    ]),
+];
 
 // Example:
 // $middlewares[] = $container->get(App\Infrastructure\Middleware\SessionMiddleware::class);
