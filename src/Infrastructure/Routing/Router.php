@@ -45,6 +45,16 @@ class Router
     }
 
     /**
+     * Gets all registered routes.
+     *
+     * @return Route[] Array of all registered routes
+     */
+    public function getRoutes(): array
+    {
+        return array_values($this->routes);
+    }
+
+    /**
      * Dispatches the request to the first matching route.
      *
      * @return ResponseInterface
