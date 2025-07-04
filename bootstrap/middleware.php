@@ -5,8 +5,20 @@ use App\Infrastructure\Middleware\MiddlewareInterface;
 use App\Infrastructure\Middleware\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 
+
 /** @var ContainerInterface $container */
-/** @var array<MiddlewareInterface> $middlewares */
+$validators = [
+    // Define validation rules for specific routes
+    // 'POST /user' => [
+    //     (new FieldValidator('name'))
+    //         ->addRule(new NotEmpty())
+    //         ->addRule(new MinLength(3)),
+    //     (new FieldValidator('email'))
+    //         ->addRule(new NotEmpty()),
+    // ],
+    // ... other routes ...
+];
+
 $middlewares = [
     new \App\Infrastructure\Middleware\RateLimitMiddleware(
         $container->get(\App\Infrastructure\RateLimit\RateLimitService::class)
@@ -23,6 +35,7 @@ $middlewares = [
     new \App\Infrastructure\Middleware\HttpCacheMiddleware(
         (int)($container->get('settings')['cache']['max_age'] ?? 60)
     ),
+    new \App\Infrastructure\Middleware\ValidationMiddleware($validators),
 ];
 
 $isWebApp = !str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/api');
