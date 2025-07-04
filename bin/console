@@ -16,6 +16,7 @@ use App\Infrastructure\Console\Commands\MigrateCommand;
 use App\Infrastructure\Console\Commands\ListRoutesCommand;
 use App\Infrastructure\Console\Commands\GenerateKeyCommand;
 use App\Infrastructure\Console\Commands\HealthCheckCommand;
+use App\Infrastructure\Console\Commands\DatabaseInitCommand;
 
 // Load environment variables
 EnvLoader::load();
@@ -33,6 +34,7 @@ $app->addCommand(new MigrateCommand());
 $app->addCommand(new ListRoutesCommand());
 $app->addCommand(new GenerateKeyCommand());
 $app->addCommand(new HealthCheckCommand());
+$app->addCommand(new DatabaseInitCommand());
 
 // Run the application
 exit($app->run($argv));

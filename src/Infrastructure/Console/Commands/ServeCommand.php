@@ -44,7 +44,10 @@ class ServeCommand extends Command
 
         $this->info("Starting development server on http://{$host}:{$port}");
         $this->info("Document root: {$documentRoot}");
+        $this->warning("Note: If using 'composer serve', the process will timeout after 5 minutes.");
+        $this->warning("For long-running development, use: php bin/console serve");
         $this->info("Press Ctrl+C to stop the server");
+        echo "\n";
 
         $command = sprintf(
             'php -S %s:%s -t %s',

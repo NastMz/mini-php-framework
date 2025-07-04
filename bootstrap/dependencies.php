@@ -6,6 +6,7 @@ use App\Infrastructure\RateLimit\SimpleRateLimitService;
 use App\Infrastructure\RateLimit\RateLimitService;
 use App\Infrastructure\Logging\LoggerInterface;
 use App\Infrastructure\Templating\TemplateEngine;
+use App\Infrastructure\Database\DatabaseHelper;
 use Psr\Container\ContainerInterface;
 use App\Infrastructure\Logging\FileLogger;
 
@@ -14,15 +15,9 @@ $settings = require_once __DIR__ . '/config.php';
 
 /** @var ContainerInterface $container */
 $container = Container::build($settings, [
-    // SQLite PDO connection
-    PDO::class => fn(Container $c) => new PDO(
-        $c->get('settings')['database']['dsn'],
-        null,
-        null,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]
+    // SQLite PDO connection with auto-creation
+    PDO::class => fn(Container $c) => DatabaseHelper::createPdo(
+        DatabaseHelper::getConfig($c->get('settings')['database'])
     ),
     // Database-based rate limiter
     RateLimitService::class => fn(Container $c) => new RateLimitService(

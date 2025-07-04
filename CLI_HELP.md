@@ -36,6 +36,13 @@ php bin/console make:middleware CorsMiddleware
 
 ## Database Commands
 
+### Database Initialization
+
+```bash
+# Inicializar base de datos (crear archivo y directorios)
+php bin/console db:init
+```
+
 ### Migrations
 
 ```bash
@@ -59,13 +66,18 @@ php bin/db-setup
 ## Development Server
 
 ```bash
-# Servidor en localhost:8000
+# Servidor en localhost:8000 (Recomendado)
 php bin/console serve
 
 # Servidor en host y puerto específicos
 php bin/console serve --host=127.0.0.1 --port=8080
 php bin/console serve -H 0.0.0.0 -p 3000
+
+# Para Windows - Script directo
+dev-server.bat
 ```
+
+**Nota:** Si usas `composer serve`, el proceso se detendrá después de 5 minutos debido al timeout de Composer. Para desarrollo continuo, usa directamente `php bin/console serve`.
 
 ## Utilities
 
@@ -111,11 +123,13 @@ Este comando verifica:
 ## Composer Scripts (shortcuts)
 
 ```bash
-composer serve          # = php bin/console serve
+composer serve          # = php bin/console serve (timeout 5 min)
 composer migrate         # = php bin/console migrate
 composer run cache:clear # = php bin/console cache:clear
 composer run key:generate # = php bin/console key:generate
 ```
+
+**Nota:** `composer serve` tiene un timeout de 5 minutos. Para desarrollo continuo, usa `php bin/console serve`.
 
 ## Para Windows
 
