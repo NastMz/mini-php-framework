@@ -3,6 +3,16 @@ declare(strict_types=1);
 
 use App\Infrastructure\Middleware\MiddlewareInterface;
 use App\Infrastructure\Middleware\RequestHandlerInterface;
+use App\Infrastructure\Middleware\RequestIdMiddleware;
+use App\Infrastructure\Middleware\ErrorHandlerMiddleware;
+use App\Infrastructure\Middleware\RateLimitMiddleware;
+use App\Infrastructure\Middleware\CorsMiddleware;
+use App\Infrastructure\Middleware\SecurityHeadersMiddleware;
+use App\Infrastructure\Middleware\HttpCacheMiddleware;
+use App\Infrastructure\Middleware\ValidationMiddleware;
+use App\Infrastructure\RateLimit\RateLimitService;
+use App\Infrastructure\Middleware\SessionMiddleware;
+use App\Infrastructure\Middleware\CsrfMiddleware;
 use Psr\Container\ContainerInterface;
 
 
@@ -20,30 +30,34 @@ $validators = [
 ];
 
 $middlewares = [
-    new \App\Infrastructure\Middleware\RateLimitMiddleware(
-        $container->get(\App\Infrastructure\RateLimit\RateLimitService::class)
+    new RequestIdMiddleware(),
+    new ErrorHandlerMiddleware(
+        $container->get(LoggerInterface::class)
     ),
-    new \App\Infrastructure\Middleware\CorsMiddleware(
+    new RateLimitMiddleware(
+        $container->get(RateLimitService::class)
+    ),
+    new CorsMiddleware(
         ['https://your-app.com', 'http://localhost:3000'], // Add development domains
         ['GET','POST','PUT','DELETE','OPTIONS'],
         ['Content-Type','Authorization','X-CSRF-Token'],
         true
     ),
-    new \App\Infrastructure\Middleware\SecurityHeadersMiddleware([
+    new SecurityHeadersMiddleware([
         'Content-Security-Policy' => "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;"
     ]),
-    new \App\Infrastructure\Middleware\HttpCacheMiddleware(
+    new HttpCacheMiddleware(
         (int)($container->get('settings')['cache']['max_age'] ?? 60)
     ),
-    new \App\Infrastructure\Middleware\ValidationMiddleware($validators),
+    new ValidationMiddleware($validators),
 ];
 
 $isWebApp = !str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/api');
 
 if ($isWebApp) {
     // Only for web applications
-    array_unshift($middlewares, new \App\Infrastructure\Middleware\SessionMiddleware());
-    $middlewares[] = new \App\Infrastructure\Middleware\CsrfMiddleware();
+    array_unshift($middlewares, new SessionMiddleware());
+    $middlewares[] = new CsrfMiddleware();
 }
 
 return $middlewares;

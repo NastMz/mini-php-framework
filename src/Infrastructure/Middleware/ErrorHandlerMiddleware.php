@@ -6,45 +6,50 @@ namespace App\Infrastructure\Middleware;
 use App\Infrastructure\Http\RequestInterface;
 use App\Infrastructure\Http\Response;
 use App\Infrastructure\Http\ResponseInterface;
+use App\Infrastructure\Logging\LoggerInterface;
 
 /**
- * Class ErrorHandlerMiddleware
+ * ErrorHandlerMiddleware
  *
- * This middleware catches exceptions thrown during request processing and returns a generic 500 response.
- * It logs the full exception details for debugging purposes.
+ * Middleware that catches unhandled exceptions and logs them.
+ * It returns a 500 Internal Server Error response with a JSON body.
  */
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     /**
-     * Processes the incoming request and handles any exceptions that occur.
+     * @param LoggerInterface $logger The logger to use for logging errors
+     */
+    public function __construct(private LoggerInterface $logger) {}
+
+    /**
+     * Process the request and handle any unhandled exceptions.
      *
-     * @param RequestInterface $request The incoming HTTP request
-     * @param RequestHandlerInterface $next The next middleware or request handler in the pipeline
-     * @return ResponseInterface The HTTP response, either from the next handler or a generic error response
+     * @param RequestInterface $request The incoming request
+     * @param RequestHandlerInterface $next The next handler in the middleware chain
+     * @return ResponseInterface The response after processing
      */
     public function process(RequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         try {
             return $next->handle($request);
         } catch (\Throwable $e) {
-            // Log full exception
-            error_log(sprintf(
-                "[%s] %s in %s:%d\n%s",
-                get_class($e),
-                $e->getMessage(),
-                $e->getFile(),
-                $e->getLine(),
-                $e->getTraceAsString()
-            ));
+            $context = [
+                'exception' => get_class($e),
+                'message'   => $e->getMessage(),
+                'file'      => $e->getFile(),
+                'line'      => $e->getLine(),
+                'trace'     => $e->getTraceAsString(),
+                'requestId' => $request->getAttribute('requestId'),
+            ];
+            $this->logger->error('Unhandled exception', $context);
 
-            // Return generic 500 response
             $response = new Response();
             return $response
                 ->withStatus(500)
                 ->withHeader('Content-Type', 'application/json')
                 ->write(json_encode([
-                    'error' => 'Internal Server Error',
-                    // 'details' => $e->getMessage(), // include in dev only
+                    'error'     => 'Internal Server Error',
+                    'requestId' => $request->getAttribute('requestId'),
                 ]));
         }
     }
