@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Infrastructure\DI\Container;
+use App\Infrastructure\Persistence\MigrationRunner;
+use PDO;
+
+// 1) Bootstrap minimal
+$settings  = require __DIR__ . '/../config/settings.php';
+$container = Container::build($settings);
+$pdo       = $container->get(PDO::class);
+
+// 2) Run migrations
+$runner = new MigrationRunner($pdo, __DIR__ . '/../migrations');
+$runner->runPending();
+
+echo "All migrations complete.\n";

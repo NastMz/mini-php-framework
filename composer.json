@@ -20,7 +20,11 @@
     }
   },
   "scripts": {
-    "test": "phpunit --colors=always"
+    "test": "phpunit --colors=always",
+    "serve": "php bin/console serve",
+    "migrate": "php bin/console migrate",
+    "cache:clear": "php bin/console cache:clear",
+    "key:generate": "php bin/console key:generate"
   },
   "license": "MIT"
 }

@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Infrastructure\DI\Container;
+use App\Infrastructure\Persistence\MigrationRunner;
+use App\Infrastructure\Persistence\SeederRunner;
+use PDO;
+
+// Boot minimal
+$settings  = require __DIR__ . '/../config/settings.php';
+$container = Container::build($settings);
+$pdo       = $container->get(PDO::class);
+
+// Run migrations
+echo "=== Running Migrations ===\n";
+$migrator = new MigrationRunner($pdo, __DIR__ . '/../migrations');
+$migrator->runPending();
+
+// Run seeders
+echo "=== Running Seeders ===\n";
+$seeder = new SeederRunner($pdo, __DIR__ . '/../seeders');
+$seeder->runAll();
+
+echo "=== DB Setup Complete ===\n";

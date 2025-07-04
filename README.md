@@ -169,6 +169,99 @@ project-root/
 
 ---
 
+## CLI Commands
+
+This framework includes a powerful CLI tool for development tasks:
+
+### Available Commands
+
+```bash
+# Show help
+php bin/console help
+
+# Generate application key
+php bin/console key:generate
+php bin/console key:generate --show
+
+# Make commands
+php bin/console make:controller UserController
+php bin/console make:migration create_users_table
+php bin/console make:seeder UserSeeder
+php bin/console make:middleware AuthMiddleware
+
+# Database commands
+php bin/console migrate
+php bin/console migrate --fresh
+php bin/console migrate --rollback
+
+# Development server
+php bin/console serve
+php bin/console serve --host=127.0.0.1 --port=8080
+
+# Cache management
+php bin/console cache:clear
+
+# Routes
+php bin/console route:list
+```
+
+### Windows Users
+
+For Windows users, you can use the `.bat` file:
+
+```cmd
+bin\console.bat help
+bin\console.bat make:controller UserController
+bin\console.bat serve
+```
+
+### Composer Scripts
+
+Common commands are also available as Composer scripts:
+
+```bash
+composer serve          # Start development server
+composer migrate         # Run migrations
+composer run cache:clear # Clear cache
+composer run key:generate # Generate app key
+```
+
+## Development
+
+### Creating Controllers
+
+```bash
+php bin/console make:controller ProductController
+```
+
+This creates a new controller with basic CRUD methods in `src/Presentation/Controller/`.
+
+### Creating Migrations
+
+```bash
+php bin/console make:migration create_products_table
+```
+
+This creates a new migration file in `migrations/` with timestamp prefix.
+
+### Creating Seeders
+
+```bash
+php bin/console make:seeder ProductSeeder
+```
+
+This creates a new seeder class in `seeders/`.
+
+### Creating Middleware
+
+```bash
+php bin/console make:middleware RateLimitMiddleware
+```
+
+This creates a new middleware class in `src/Infrastructure/Middleware/`.
+
+---
+
 ## Contributing
 
 1. Fork and clone

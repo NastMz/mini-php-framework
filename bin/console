@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Infrastructure\Console\Application;
+use App\Infrastructure\Console\Commands\MakeControllerCommand;
+use App\Infrastructure\Console\Commands\MakeMigrationCommand;
+use App\Infrastructure\Console\Commands\MakeSeederCommand;
+use App\Infrastructure\Console\Commands\MakeMiddlewareCommand;
+use App\Infrastructure\Console\Commands\ClearCacheCommand;
+use App\Infrastructure\Console\Commands\ServeCommand;
+use App\Infrastructure\Console\Commands\MigrateCommand;
+use App\Infrastructure\Console\Commands\ListRoutesCommand;
+use App\Infrastructure\Console\Commands\GenerateKeyCommand;
+
+$app = new Application('MiniFramework CLI', '1.0.0');
+
+// Register commands
+$app->addCommand(new MakeControllerCommand());
+$app->addCommand(new MakeMigrationCommand());
+$app->addCommand(new MakeSeederCommand());
+$app->addCommand(new MakeMiddlewareCommand());
+$app->addCommand(new ClearCacheCommand());
+$app->addCommand(new ServeCommand());
+$app->addCommand(new MigrateCommand());
+$app->addCommand(new ListRoutesCommand());
+$app->addCommand(new GenerateKeyCommand());
+
+// Run the application
+exit($app->run($argv));

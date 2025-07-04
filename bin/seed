@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Infrastructure\DI\Container;
+use App\Infrastructure\Persistence\SeederRunner;
+use PDO;
+
+// 1) Bootstrap minimal
+$settings  = require __DIR__ . '/../config/settings.php';
+$container = Container::build($settings);
+$pdo       = $container->get(PDO::class);
+
+// 2) Run seeders
+$runner = new SeederRunner($pdo, __DIR__ . '/../seeders');
+$runner->runAll();
+
+echo "All seeders complete.\n";
