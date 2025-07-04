@@ -9,7 +9,7 @@ use Psr\Container\ContainerInterface;
 /** @var array<MiddlewareInterface> $middlewares */
 $middlewares = [
     new \App\Infrastructure\Middleware\RateLimitMiddleware(
-        $container->get(\App\Infrastructure\RateLimit\SimpleRateLimitService::class)
+        $container->get(\App\Infrastructure\RateLimit\RateLimitService::class)
     ),
     new \App\Infrastructure\Middleware\CorsMiddleware(
         ['https://your-app.com', 'http://localhost:3000'], // Add development domains

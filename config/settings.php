@@ -2,6 +2,9 @@
 declare(strict_types=1);
 
 return [
+    'database' => [
+        'dsn' => 'sqlite:' . __DIR__ . '/../storage/database/app.sqlite',
+    ],
     'rate_limit' => [
         'max_requests' => 60,  // requests per window
         'window_size'  => 60,  // window in seconds
