@@ -165,21 +165,35 @@ abstract class Command
             
             if (str_starts_with($arg, '--')) {
                 $option = substr($arg, 2);
-                $options[$option] = true;
                 
-                // Check if next argument is a value
-                if (isset($args[$i + 1]) && !str_starts_with($args[$i + 1], '-')) {
-                    $options[$option] = $args[$i + 1];
-                    $i++;
+                // Handle --option=value format
+                if (str_contains($option, '=')) {
+                    [$optionName, $optionValue] = explode('=', $option, 2);
+                    $options[$optionName] = $optionValue;
+                } else {
+                    $options[$option] = true;
+                    
+                    // Check if next argument is a value
+                    if (isset($args[$i + 1]) && !str_starts_with($args[$i + 1], '-')) {
+                        $options[$option] = $args[$i + 1];
+                        $i++;
+                    }
                 }
             } elseif (str_starts_with($arg, '-')) {
                 $option = substr($arg, 1);
-                $options[$option] = true;
                 
-                // Check if next argument is a value
-                if (isset($args[$i + 1]) && !str_starts_with($args[$i + 1], '-')) {
-                    $options[$option] = $args[$i + 1];
-                    $i++;
+                // Handle -o=value format
+                if (str_contains($option, '=')) {
+                    [$optionName, $optionValue] = explode('=', $option, 2);
+                    $options[$optionName] = $optionValue;
+                } else {
+                    $options[$option] = true;
+                    
+                    // Check if next argument is a value
+                    if (isset($args[$i + 1]) && !str_starts_with($args[$i + 1], '-')) {
+                        $options[$option] = $args[$i + 1];
+                        $i++;
+                    }
                 }
             } else {
                 // It's a positional argument

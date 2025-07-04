@@ -23,10 +23,13 @@ class DatabaseHelper
         if (str_starts_with($dsn, 'sqlite:')) {
             $dbPath = str_replace('sqlite:', '', $dsn);
             
-            // Handle relative paths
+            // Handle relative paths - convert to absolute
             if (!str_starts_with($dbPath, '/') && !preg_match('/^[A-Za-z]:/', $dbPath)) {
                 $dbPath = __DIR__ . '/../../../' . $dbPath;
             }
+            
+            // Normalize path
+            $dbPath = realpath(dirname($dbPath)) . DIRECTORY_SEPARATOR . basename($dbPath);
             
             // Create directory if it doesn't exist
             $dir = dirname($dbPath);
@@ -43,6 +46,9 @@ class DatabaseHelper
                 }
                 chmod($dbPath, 0664);
             }
+            
+            // Update DSN to use absolute path
+            $dsn = 'sqlite:' . $dbPath;
         }
         
         return new PDO($dsn, $username, $password, [
