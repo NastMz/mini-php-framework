@@ -14,8 +14,21 @@ use Psr\Container\ContainerInterface;
 use App\Infrastructure\Logging\CompositeLogger;
 use App\Infrastructure\Health\HealthCheckService;
 use App\Presentation\Controller\HealthController;
+use App\Presentation\Controller\CqrsController;
 use App\Infrastructure\Event\DomainEventDispatcher;
 use App\Infrastructure\Event\LoggingEventSubscriber;
+use App\Application\Command\CommandBusInterface;
+use App\Application\Command\InMemoryCommandBus;
+use App\Application\Query\QueryBusInterface;
+use App\Application\Query\InMemoryQueryBus;
+use App\Application\Command\Handlers\CreateUserCommandHandler;
+use App\Application\Command\Handlers\UploadFileCommandHandler;
+use App\Application\Query\Handlers\GetUserByEmailQueryHandler;
+use App\Application\Query\Handlers\GetSystemHealthQueryHandler;
+use App\Application\Command\CreateUserCommand;
+use App\Application\Command\UploadFileCommand;
+use App\Application\Query\GetUserByEmailQuery;
+use App\Application\Query\GetSystemHealthQuery;
 
 /** @var array<string,mixed> $settings */
 $settings = require_once __DIR__ . '/config.php';
@@ -63,6 +76,11 @@ $container = Container::build($settings, [
     HealthController::class => fn(Container $c) => new HealthController(
         $c->get(HealthCheckService::class)
     ),
+    // CQRS Controller
+    CqrsController::class => fn(Container $c) => new CqrsController(
+        $c->get(CommandBusInterface::class),
+        $c->get(QueryBusInterface::class)
+    ),
     // Event Subscriber
     LoggingEventSubscriber::class => fn(Container $c) => new LoggingEventSubscriber(
         $c->get(LoggerInterface::class)
@@ -73,6 +91,40 @@ $container = Container::build($settings, [
         [
             // List of subscriber classes to dispatch events to
             LoggingEventSubscriber::class,
+        ]
+    ),
+    // Command Handlers
+    CreateUserCommandHandler::class => fn(Container $c) => new CreateUserCommandHandler(
+        $c->get(LoggerInterface::class),
+        $c->get(DomainEventDispatcher::class)
+    ),
+    UploadFileCommandHandler::class => fn(Container $c) => new UploadFileCommandHandler(
+        $c->get(FileUploadService::class),
+        $c->get(LoggerInterface::class)
+    ),
+    // Query Handlers
+    GetUserByEmailQueryHandler::class => fn(Container $c) => new GetUserByEmailQueryHandler(
+        $c->get(LoggerInterface::class)
+    ),
+    GetSystemHealthQueryHandler::class => fn(Container $c) => new GetSystemHealthQueryHandler(
+        $c->get(HealthCheckService::class)
+    ),
+    // Command Bus
+    CommandBusInterface::class => fn(Container $c) => new InMemoryCommandBus(
+        $c,
+        [
+            // Map of command classes to their handler classes
+            CreateUserCommand::class => CreateUserCommandHandler::class,
+            UploadFileCommand::class => UploadFileCommandHandler::class,
+        ]
+    ),
+    // Query Bus
+    QueryBusInterface::class => fn(Container $c) => new InMemoryQueryBus(
+        $c,
+        [
+            // Map of query classes to their handler classes
+            GetUserByEmailQuery::class => GetUserByEmailQueryHandler::class,
+            GetSystemHealthQuery::class => GetSystemHealthQueryHandler::class,
         ]
     ),
 ]);
