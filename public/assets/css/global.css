@@ -71,3 +71,48 @@ h1 {
     font-size: 0.9rem;
     margin-top: 2rem;
 }
+
+.test-section {
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.test-section h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.test-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.test-link {
+    display: block;
+    text-decoration: none;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.test-link:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.test-link strong {
+    color: #007bff;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.test-link span {
+    color: #666;
+    font-size: 0.9rem;
+}

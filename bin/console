@@ -18,6 +18,7 @@ use App\Infrastructure\Console\Commands\GenerateKeyCommand;
 use App\Infrastructure\Console\Commands\HealthCheckCommand;
 use App\Infrastructure\Console\Commands\DatabaseInitCommand;
 use App\Infrastructure\Console\Commands\TestCommand;
+use App\Infrastructure\Console\Commands\GenerateJwtSecretCommand;
 use App\Infrastructure\Logging\LoggerInterface;
 
 // Load environment variables
@@ -38,6 +39,7 @@ $app->addCommand(new ServeCommand());
 $app->addCommand(new MigrateCommand());
 $app->addCommand(new ListRoutesCommand());
 $app->addCommand(new GenerateKeyCommand());
+$app->addCommand(new GenerateJwtSecretCommand());
 $app->addCommand(new HealthCheckCommand());
 $app->addCommand(new DatabaseInitCommand());
 $app->addCommand(new TestCommand());

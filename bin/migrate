@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Infrastructure\DI\Container;
 use App\Infrastructure\Persistence\MigrationRunner;
 use PDO;
 
-// 1) Bootstrap minimal
-$settings  = require __DIR__ . '/../config/settings.php';
-$container = Container::build($settings);
+// 1) Bootstrap complete dependencies
+$container = require_once __DIR__ . '/../bootstrap/dependencies.php';
 $pdo       = $container->get(PDO::class);
 
 // 2) Run migrations

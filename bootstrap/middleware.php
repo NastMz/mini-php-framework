@@ -10,6 +10,7 @@ use App\Infrastructure\Middleware\AutoValidationMiddleware;
 use App\Infrastructure\Middleware\AutoSerializationMiddleware;
 use App\Infrastructure\Middleware\SessionMiddleware;
 use App\Infrastructure\Middleware\CsrfMiddleware;
+use App\Infrastructure\Middleware\JwtAuthenticationMiddleware;
 use App\Infrastructure\RateLimit\RateLimitService;
 use App\Infrastructure\Logging\LoggerInterface;
 use App\Infrastructure\Validation\AutoValidator;
@@ -54,7 +55,7 @@ $middlewares = [
 
 // Determine context based on request
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
-$isApiRequest = str_starts_with($requestUri, '/api');
+$isApiRequest = str_starts_with($requestUri, '/api') || str_starts_with($requestUri, '/auth');
 $isWebRequest = !$isApiRequest;
 
 // Add context-specific middlewares
@@ -81,5 +82,20 @@ array_push($middlewares,
         $container->get(AutoSerializer::class)
     )
 );
+
+// JWT Authentication for protected routes
+if ($isApiRequest) {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    
+    // Apply JWT middleware to protected endpoints
+    $protectedEndpoints = ['/auth/me', '/auth/refresh', '/auth/logout'];
+    
+    foreach ($protectedEndpoints as $endpoint) {
+        if ($path === $endpoint) {
+            array_unshift($middlewares, new JwtAuthenticationMiddleware());
+            break;
+        }
+    }
+}
 
 return $middlewares;

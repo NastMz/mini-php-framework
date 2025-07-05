@@ -9,6 +9,7 @@ return [
         'env' => EnvLoader::get('APP_ENV', 'production'),
         'debug' => EnvLoader::get('APP_DEBUG', 'false') === 'true',
         'key' => EnvLoader::get('APP_KEY'),
+        'jwt_secret' => EnvLoader::get('JWT_SECRET', 'test-secret-key-for-development-only'),
     ],
     'database' => [
         'dsn' => EnvLoader::get('DB_DSN', 'sqlite:' . __DIR__ . '/../storage/database/app.sqlite'),

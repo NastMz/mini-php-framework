@@ -24,7 +24,20 @@ Mini Framework PHP - Home
             <strong>🔧 Middleware Support</strong> - PSR-15 Compatible
         </div>
         <div class="feature">
-            <strong>📦 Autowiring</strong> - Automatic Dependency Resolution
+            <strong>� JWT Authentication</strong> - Token-based Security
+        </div>
+        <div class="feature">
+            <strong>�📦 Autowiring</strong> - Automatic Dependency Resolution
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🧪 Pruebas Disponibles</h3>
+        <div class="test-links">
+            <a href="/jwt-test" class="test-link">
+                <strong>🔐 JWT Authentication Test</strong>
+                <span>Prueba los endpoints de autenticación JWT</span>
+            </a>
         </div>
     </div>
     
