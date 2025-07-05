@@ -4,3 +4,7 @@ logs/
 /storage/
 .env
 /public/uploads/
+/.vscode/
+.idea/
+.DS_Store
+.phpunit.cache
