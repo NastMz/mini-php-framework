@@ -17,6 +17,7 @@ use App\Infrastructure\Console\Commands\ListRoutesCommand;
 use App\Infrastructure\Console\Commands\GenerateKeyCommand;
 use App\Infrastructure\Console\Commands\HealthCheckCommand;
 use App\Infrastructure\Console\Commands\DatabaseInitCommand;
+use App\Infrastructure\Console\Commands\TestCommand;
 use App\Infrastructure\Logging\LoggerInterface;
 
 // Load environment variables
@@ -39,6 +40,7 @@ $app->addCommand(new ListRoutesCommand());
 $app->addCommand(new GenerateKeyCommand());
 $app->addCommand(new HealthCheckCommand());
 $app->addCommand(new DatabaseInitCommand());
+$app->addCommand(new TestCommand());
 
 // Run the application
 exit($app->run($argv));
