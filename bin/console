@@ -20,6 +20,8 @@ use App\Infrastructure\Console\Commands\DatabaseInitCommand;
 use App\Infrastructure\Console\Commands\LogTestCommand;
 use App\Infrastructure\Console\Commands\TestEventsCommand;
 use App\Infrastructure\Console\Commands\TestCqrsCommand;
+use App\Infrastructure\Console\Commands\TestAutoRegistrationCommand;
+use App\Infrastructure\Console\Commands\AutoRegistrationBenchmarkCommand;
 use App\Infrastructure\Logging\LoggerInterface;
 use App\Infrastructure\Event\DomainEventDispatcher;
 use App\Application\Command\CommandBusInterface;
@@ -51,6 +53,12 @@ $app->addCommand(new TestCqrsCommand(
     $container->get(CommandBusInterface::class),
     $container->get(QueryBusInterface::class)
 ));
+$app->addCommand(new TestAutoRegistrationCommand(
+    $container->get(CommandBusInterface::class),
+    $container->get(QueryBusInterface::class),
+    $container->get(\App\Infrastructure\Service\NotificationService::class)
+));
+$app->addCommand(new AutoRegistrationBenchmarkCommand());
 
 // Run the application
 exit($app->run($argv));
