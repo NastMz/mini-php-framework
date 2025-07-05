@@ -66,11 +66,16 @@ class TemplateEngine
             // remove the @extends directive
             $contents = preg_replace('/@extends\(\s*[\'"].+?[\'"]\s*\)/', '', $contents);
 
-            // 2) Extract @section blocks
+            // 2) Extract @section blocks and compile their content
             $contents = preg_replace_callback(
                 '/@section\(\s*[\'"](.+?)[\'"]\s*\)(.*?)@endsection/s',
-                function($match) use (&$sections) {
-                    $sections[$match[1]] = $match[2];
+                function($match) use (&$sections, $vars) {
+                    // Compile the section content for variable substitution
+                    $compiledContent = $this->compileContent($match[2]);
+                    
+                    // Evaluate the compiled content with variables
+                    $sectionOutput = $this->evaluateCompiledContent($compiledContent, $vars);
+                    $sections[$match[1]] = $sectionOutput;
                     return '';
                 },
                 $contents
@@ -106,11 +111,36 @@ class TemplateEngine
      */
     private function compile(string $src, string $cacheFile): void
     {
+        $compiled = $this->compileContent($src);
+        
+        // Write to cache
+        file_put_contents($cacheFile, $compiled);
+    }
+
+    /**
+     * Evaluate compiled PHP content with variables.
+     */
+    private function evaluateCompiledContent(string $compiledContent, array $vars): string
+    {
+        // Extract variables into local scope
+        extract($vars, EXTR_SKIP);
+        
+        // Evaluate the compiled content
+        ob_start();
+        eval('?>' . $compiledContent);
+        return (string) ob_get_clean();
+    }
+
+    /**
+     * Compile template content for variable substitution and directives.
+     */
+    private function compileContent(string $content): string
+    {
         // 1) Escape variables: {{ $var }}
         $compiled = preg_replace(
             '/\{\{\s*(.+?)\s*\}\}/',
             '<?php echo htmlspecialchars($1, ENT_QUOTES, \'UTF-8\'); ?>',
-            $src
+            $content
         );
 
         // 2) Yields: @yield('name')
@@ -122,7 +152,6 @@ class TemplateEngine
 
         // 3) (Optionally) you could add more directives here…
 
-        // 4) Write to cache
-        file_put_contents($cacheFile, $compiled);
+        return $compiled;
     }
 }
