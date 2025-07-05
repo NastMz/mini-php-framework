@@ -10,12 +10,19 @@ use Psr\Container\ContainerInterface;
 $container = $container ?? throw new RuntimeException('Container not provided to routes.php');
 $router = $container->get(Router::class);
 
-// Example registration (uncomment and adjust):
 use App\Infrastructure\Routing\HttpMethod;
 use App\Infrastructure\Routing\Route;
 use App\Presentation\Controller\HomeController;
 use App\Presentation\Controller\Api\ApiController;
 use App\Presentation\Controller\FileUploadController;
+use App\Presentation\Controller\HealthController;
+
+// Health Check routes
+$router->add(new Route(
+    HttpMethod::GET,
+    '/healthz',
+    HealthController::class . '::status'
+));
 
 // Web routes
 $router->add(new Route(
