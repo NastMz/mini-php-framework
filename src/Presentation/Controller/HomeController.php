@@ -7,6 +7,8 @@ use App\Infrastructure\Http\RequestInterface;
 use App\Infrastructure\Http\Response;
 use App\Infrastructure\Http\ResponseInterface;
 use App\Infrastructure\Templating\TemplateEngine;
+use App\Infrastructure\Routing\Attributes\Route;
+use App\Infrastructure\Routing\HttpMethod;
 
 /**
  * Home Controller
@@ -22,6 +24,7 @@ class HomeController
     /**
      * Display the home page
      */
+    #[Route(HttpMethod::GET, '/', name: 'home.index')]
     public function index(RequestInterface $request): ResponseInterface
     {
         $html = $this->renderHomeView($request);
@@ -30,6 +33,15 @@ class HomeController
             ->withStatus(200)
             ->withHeader('Content-Type', 'text/html; charset=utf-8')
             ->write($html);
+    }
+
+    /**
+     * Test page (same as home)
+     */
+    #[Route(HttpMethod::GET, '/test', name: 'home.test')]
+    public function test(RequestInterface $request): ResponseInterface
+    {
+        return $this->index($request);
     }
 
     /**

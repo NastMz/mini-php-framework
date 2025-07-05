@@ -8,6 +8,9 @@ use App\Infrastructure\Http\ResponseInterface;
 use App\Infrastructure\Security\AppSecurity;
 use App\Infrastructure\Security\EncryptionException;
 use App\Infrastructure\Config\EnvLoader;
+use App\Infrastructure\Routing\Attributes\Route;
+use App\Infrastructure\Routing\Attributes\Controller;
+use App\Infrastructure\Routing\HttpMethod;
 
 /**
  * ExampleController
@@ -15,15 +18,13 @@ use App\Infrastructure\Config\EnvLoader;
  * This controller provides example endpoints for application information,
  * data encryption/decryption, and CSRF token generation.
  */
+#[Controller(prefix: '/examples')]
 class ExampleController
 {
     /**
      * Show application information such as name, environment, debug mode, and app key status.
-     *
-     * @param RequestInterface $request The HTTP request object.
-     * @param ResponseInterface $response The HTTP response object.
-     * @return ResponseInterface The response containing application information in JSON format.
      */
+    #[Route(HttpMethod::GET, '/app-info', name: 'examples.app-info')]
     public function showAppInfo(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $appName = EnvLoader::get('APP_NAME', 'Default App');
@@ -42,11 +43,8 @@ class ExampleController
     
     /**
      * Encrypt data using the application key.
-     *
-     * @param RequestInterface $request The HTTP request object containing the data to encrypt.
-     * @param ResponseInterface $response The HTTP response object.
-     * @return ResponseInterface The response containing the encrypted data in JSON format.
      */
+    #[Route(HttpMethod::POST, '/encrypt', name: 'examples.encrypt')]
     public function encryptData(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $data = $request->getBody();
@@ -68,11 +66,8 @@ class ExampleController
     
     /**
      * Decrypt data using the application key.
-     *
-     * @param RequestInterface $request The HTTP request object containing the encrypted data.
-     * @param ResponseInterface $response The HTTP response object.
-     * @return ResponseInterface The response containing the decrypted data in JSON format.
      */
+    #[Route(HttpMethod::POST, '/decrypt', name: 'examples.decrypt')]
     public function decryptData(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $encryptedData = $request->getBody();
@@ -94,11 +89,8 @@ class ExampleController
     
     /**
      * Generate a CSRF token.
-     *
-     * @param RequestInterface $request The HTTP request object.
-     * @param ResponseInterface $response The HTTP response object.
-     * @return ResponseInterface The response containing the CSRF token in JSON format.
      */
+    #[Route(HttpMethod::GET, '/csrf-token', name: 'examples.csrf-token')]
     public function generateCsrfToken(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $token = AppSecurity::generateCsrfToken();

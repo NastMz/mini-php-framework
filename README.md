@@ -25,7 +25,7 @@ A 100% home-grown PHP micro-framework template implementing DDD and Clean Archit
   - Combined `bin/db-setup` for migrate + seed
 - **Validation**
   - `ValidatorInterface`, built-in rules (`NotEmpty`, `MinLength`)
-  - `ValidationMiddleware` returning 422 with field-level errors
+  - `AutoValidationMiddleware` with attribute-based validation returning 422 with field-level errors
 - **Authentication & Authorization**
   - Password hashing (`BcryptHasher`)
   - JWT tokens (`JwtService`)

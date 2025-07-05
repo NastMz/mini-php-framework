@@ -20,6 +20,8 @@ use App\Application\Command\InMemoryCommandBus;
 use App\Application\Query\QueryBusInterface;
 use App\Application\Query\InMemoryQueryBus;
 use App\Infrastructure\DI\AutoRegistration;
+use App\Infrastructure\Validation\AutoValidator;
+use App\Infrastructure\Serialization\AutoSerializer;
 
 /** @var array<string,mixed> $settings */
 $settings = require_once __DIR__ . '/config.php';
@@ -85,6 +87,13 @@ $container = Container::build($settings, array_merge([
         $c,
         $autoResult['cqrs']['queries']
     ),
+    
+    // Auto-validation services
+    AutoValidator::class => fn() => new AutoValidator(),
+    
+    // Auto-serialization services
+    AutoSerializer::class => fn() => new AutoSerializer(),
+    
 ], $autoResult['services']));
 
 return $container;

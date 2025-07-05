@@ -6,6 +6,8 @@ namespace App\Presentation\Controller;
 use App\Infrastructure\Http\Response;
 use App\Infrastructure\Http\ResponseInterface;
 use App\Infrastructure\Health\HealthCheckService;
+use App\Infrastructure\Routing\Attributes\Route;
+use App\Infrastructure\Routing\HttpMethod;
 
 /**
  * HealthController
@@ -25,6 +27,7 @@ class HealthController
      *
      * @return Response JSON response with health status
      */
+    #[Route(HttpMethod::GET, '/healthz', name: 'health.status')]
     public function status(): ResponseInterface
     {
         $report = $this->health->checkAll();

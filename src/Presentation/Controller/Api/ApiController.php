@@ -6,17 +6,22 @@ namespace App\Presentation\Controller\Api;
 use App\Infrastructure\Http\RequestInterface;
 use App\Infrastructure\Http\Response;
 use App\Infrastructure\Http\ResponseInterface;
+use App\Infrastructure\Routing\Attributes\Route;
+use App\Infrastructure\Routing\Attributes\Controller;
+use App\Infrastructure\Routing\HttpMethod;
 
 /**
  * API Controller
  * 
  * Handles API requests
  */
+#[Controller(prefix: '/api')]
 class ApiController
 {
     /**
      * API status endpoint
      */
+    #[Route(HttpMethod::GET, '/status', name: 'api.status')]
     public function status(RequestInterface $request): ResponseInterface
     {
         return (new Response())
@@ -33,6 +38,7 @@ class ApiController
     /**
      * API info endpoint
      */
+    #[Route(HttpMethod::GET, '/info', name: 'api.info')]
     public function info(RequestInterface $request): ResponseInterface
     {
         return (new Response())

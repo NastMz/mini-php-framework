@@ -4,69 +4,25 @@ declare(strict_types=1);
 // bootstrap/routes.php
 
 use App\Infrastructure\Routing\Router;
+use App\Infrastructure\Routing\AutoRouter;
 use Psr\Container\ContainerInterface;
 
 /** @var ContainerInterface $container */
 $container = $container ?? throw new RuntimeException('Container not provided to routes.php');
 $router = $container->get(Router::class);
 
-use App\Infrastructure\Routing\HttpMethod;
-use App\Infrastructure\Routing\Route;
-use App\Presentation\Controller\HomeController;
-use App\Presentation\Controller\Api\ApiController;
-use App\Presentation\Controller\FileUploadController;
-use App\Presentation\Controller\HealthController;
+// Auto-discover routes from controller attributes
+$autoRouter = new AutoRouter(
+    'App',
+    __DIR__ . '/../src/Presentation/Controller'
+);
 
-// Health Check routes
-$router->add(new Route(
-    HttpMethod::GET,
-    '/healthz',
-    HealthController::class . '::status'
-));
+$autoResult = $autoRouter->discover();
+$autoRouter->registerRoutes($router);
 
-// Web routes
-$router->add(new Route(
-    HttpMethod::GET,
-    '/',
-    HomeController::class . '::index'
-));
-
-$router->add(new Route(
-    HttpMethod::GET,
-    '/test',
-    HomeController::class . '::index'
-));
-
-// API routes
-$router->add(new Route(
-    HttpMethod::GET,
-    '/api/status',
-    ApiController::class . '::status'
-));
-
-$router->add(new Route(
-    HttpMethod::GET,
-    '/api/info',
-    ApiController::class . '::info'
-));
-
-// File Upload routes
-$router->add(new Route(
-    HttpMethod::GET,
-    '/upload',
-    FileUploadController::class . '::showForm'
-));
-
-$router->add(new Route(
-    HttpMethod::POST,
-    '/api/upload',
-    FileUploadController::class . '::upload'
-));
-
-$router->add(new Route(
-    HttpMethod::DELETE,
-    '/api/upload/{path}',
-    FileUploadController::class . '::delete'
-));
+// Debug information (only in development)
+if (($_ENV['APP_DEBUG'] ?? 'false') === 'true') {
+    error_log('Auto-discovered routes: ' . json_encode($autoResult['debug']));
+}
 
 return $router;

@@ -11,12 +11,18 @@ use App\Application\Query\QueryBusInterface;
 use App\Application\Command\CreateUserCommand;
 use App\Application\Query\GetUserByEmailQuery;
 use App\Application\Query\GetSystemHealthQuery;
+use App\Infrastructure\Routing\Attributes\Route;
+use App\Infrastructure\Routing\Attributes\Controller;
+use App\Infrastructure\Routing\HttpMethod;
+use App\Infrastructure\Validation\Attributes\Required;
+use App\Infrastructure\Validation\Attributes\Email;
 
 /**
  * CqrsController
  *
  * Demonstrates CQRS usage in web context.
  */
+#[Controller(prefix: '/cqrs')]
 class CqrsController
 {
     private const CONTENT_TYPE_JSON = 'application/json';
@@ -29,16 +35,13 @@ class CqrsController
     /**
      * Create a new user via Command.
      */
-    public function createUser(Request $request): ResponseInterface
-    {
-        $data = $request->getParsedBody();
-        
-        $command = new CreateUserCommand(
-            $data['email'] ?? '',
-            $data['name'] ?? '',
-            $data['password'] ?? ''
-        );
-
+    #[Route(HttpMethod::POST, '/users', name: 'cqrs.users.create')]
+    public function createUser(
+        #[Required] #[Email] string $email,
+        #[Required] string $name,
+        #[Required] string $password
+    ): ResponseInterface {
+        $command = new CreateUserCommand($email, $name, $password);
         $result = $this->commandBus->dispatch($command);
 
         return (new Response())
@@ -53,19 +56,10 @@ class CqrsController
     /**
      * Get user by email via Query.
      */
-    public function getUserByEmail(Request $request): ResponseInterface
-    {
-        $email = $request->getQueryParam('email');
-        
-        if (!$email) {
-            return (new Response())
-                ->withStatus(400)
-                ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
-                ->write(json_encode([
-                    'error' => 'Email parameter is required'
-                ]));
-        }
-
+    #[Route(HttpMethod::GET, '/users', name: 'cqrs.users.show')]
+    public function getUserByEmail(
+        #[Required] #[Email] string $email
+    ): ResponseInterface {
         $query = new GetUserByEmailQuery($email);
         $user = $this->queryBus->dispatch($query);
 
@@ -90,6 +84,7 @@ class CqrsController
     /**
      * Get system health via Query.
      */
+    #[Route(HttpMethod::GET, '/health', name: 'cqrs.health')]
     public function getHealth(): ResponseInterface
     {
         $query = new GetSystemHealthQuery();

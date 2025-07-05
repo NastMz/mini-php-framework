@@ -87,6 +87,9 @@ class MakeControllerCommand extends Command
      */
     private function getControllerTemplate(string $className): string
     {
+        $resourceName = str_replace('Controller', '', $className);
+        $prefix = '/' . strtolower($resourceName);
+        
         return <<<PHP
             <?php
             declare(strict_types=1);
@@ -95,57 +98,64 @@ class MakeControllerCommand extends Command
 
             use App\Infrastructure\Http\RequestInterface;
             use App\Infrastructure\Http\ResponseInterface;
+            use App\Infrastructure\Http\Response;
+            use App\Infrastructure\Routing\Attributes\Route;
+            use App\Infrastructure\Routing\Attributes\Controller;
+            use App\Infrastructure\Routing\HttpMethod;
 
+            #[Controller(prefix: '{$prefix}')]
             class {$className}
             {
-                public function index(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                private const CONTENT_TYPE_JSON = 'application/json';
+
+                #[Route(HttpMethod::GET, '/', name: '{$resourceName}.index')]
+                public function index(): ResponseInterface
                 {
                     // TODO: Implement index method
-                    return \$response->withBody('Hello from {$className}!');
+                    return (new Response())
+                        ->withStatus(200)
+                        ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
+                        ->write(json_encode(['message' => 'Hello from {$className}!']));
                 }
 
-                public function show(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                #[Route(HttpMethod::GET, '/{id}', name: '{$resourceName}.show')]
+                public function show(string \$id): ResponseInterface
                 {
-                    \$id = \$request->getAttribute('id');
-                    
                     // TODO: Implement show method
-                    return \$response->withBody("Showing resource: {\$id}");
+                    return (new Response())
+                        ->withStatus(200)
+                        ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
+                        ->write(json_encode(['message' => "Showing resource: {\$id}"]));
                 }
 
-                public function create(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-                {
-                    // TODO: Implement create method
-                    return \$response->withBody('Create form');
-                }
-
-                public function store(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                #[Route(HttpMethod::POST, '/', name: '{$resourceName}.store')]
+                public function store(RequestInterface \$request): ResponseInterface
                 {
                     // TODO: Implement store method
-                    return \$response->withBody('Resource created');
+                    return (new Response())
+                        ->withStatus(201)
+                        ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
+                        ->write(json_encode(['message' => 'Resource created']));
                 }
 
-                public function edit(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                #[Route(HttpMethod::PUT, '/{id}', name: '{$resourceName}.update')]
+                public function update(string \$id, RequestInterface \$request): ResponseInterface
                 {
-                    \$id = \$request->getAttribute('id');
-                    
-                    // TODO: Implement edit method
-                    return \$response->withBody("Edit form for resource: {\$id}");
-                }
-
-                public function update(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
-                {
-                    \$id = \$request->getAttribute('id');
-                    
                     // TODO: Implement update method
-                    return \$response->withBody("Resource {\$id} updated");
+                    return (new Response())
+                        ->withStatus(200)
+                        ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
+                        ->write(json_encode(['message' => "Resource {\$id} updated"]));
                 }
 
-                public function destroy(RequestInterface \$request, ResponseInterface \$response): ResponseInterface
+                #[Route(HttpMethod::DELETE, '/{id}', name: '{$resourceName}.destroy')]
+                public function destroy(string \$id): ResponseInterface
                 {
-                    \$id = \$request->getAttribute('id');
-                    
                     // TODO: Implement destroy method
-                    return \$response->withBody("Resource {\$id} deleted");
+                    return (new Response())
+                        ->withStatus(200)
+                        ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
+                        ->write(json_encode(['message' => "Resource {\$id} deleted"]));
                 }
             }
         PHP;

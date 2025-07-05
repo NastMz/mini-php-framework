@@ -9,26 +9,17 @@ use App\Infrastructure\Middleware\RateLimitMiddleware;
 use App\Infrastructure\Middleware\CorsMiddleware;
 use App\Infrastructure\Middleware\SecurityHeadersMiddleware;
 use App\Infrastructure\Middleware\HttpCacheMiddleware;
-use App\Infrastructure\Middleware\ValidationMiddleware;
+use App\Infrastructure\Middleware\AutoValidationMiddleware;
+use App\Infrastructure\Middleware\AutoSerializationMiddleware;
 use App\Infrastructure\RateLimit\RateLimitService;
 use App\Infrastructure\Middleware\SessionMiddleware;
 use App\Infrastructure\Middleware\CsrfMiddleware;
 use App\Infrastructure\Logging\LoggerInterface;
+use App\Infrastructure\Validation\AutoValidator;
+use App\Infrastructure\Serialization\AutoSerializer;
 use Psr\Container\ContainerInterface;
 
-
 /** @var ContainerInterface $container */
-$validators = [
-    // Define validation rules for specific routes
-    // 'POST /user' => [
-    //     (new FieldValidator('name'))
-    //         ->addRule(new NotEmpty())
-    //         ->addRule(new MinLength(3)),
-    //     (new FieldValidator('email'))
-    //         ->addRule(new NotEmpty()),
-    // ],
-    // ... other routes ...
-];
 
 $middlewares = [
     new RequestIdMiddleware(),
@@ -50,7 +41,13 @@ $middlewares = [
     new HttpCacheMiddleware(
         (int)($container->get('settings')['cache']['max_age'] ?? 60)
     ),
-    new ValidationMiddleware($validators),
+    new AutoValidationMiddleware(
+        $container,
+        $container->get(AutoValidator::class)
+    ),
+    new AutoSerializationMiddleware(
+        $container->get(AutoSerializer::class)
+    ),
 ];
 
 $isWebApp = !str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/api');

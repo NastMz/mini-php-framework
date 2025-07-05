@@ -95,6 +95,11 @@ class Router
                 [$class, $methodName] = explode('::', $handler, 2);
                 $instance = $this->container->get($class);
                 $handler = [$instance, $methodName];
+                
+                // Store handler info for middleware
+                $req = $req->withAttribute('handler', $route->handler);
+                $req = $req->withAttribute('controller_class', $class);
+                $req = $req->withAttribute('controller_method', $methodName);
             }
 
             // Call handler(Request, Response, ...$params)

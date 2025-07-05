@@ -8,12 +8,16 @@ use App\Infrastructure\Http\ResponseInterface;
 use App\Infrastructure\Http\Response;
 use App\Infrastructure\Service\FileUploadService;
 use App\Domain\Service\FileStorageInterface;
+use App\Infrastructure\Routing\Attributes\Route;
+use App\Infrastructure\Routing\Attributes\Controller;
+use App\Infrastructure\Routing\HttpMethod;
 
 /**
  * FileUploadController
  *
  * Handles file upload requests
  */
+#[Controller(prefix: '/upload')]
 class FileUploadController
 {
     public function __construct(
@@ -22,8 +26,22 @@ class FileUploadController
     ) {}
 
     /**
+     * Show upload form
+     */
+    #[Route(HttpMethod::GET, '/', name: 'upload.form')]
+    public function showForm(): ResponseInterface
+    {
+        // This method will be implemented to show the upload form
+        return (new Response())
+            ->withStatus(200)
+            ->withHeader('Content-Type', 'text/html')
+            ->write($this->getUploadFormHtml());
+    }
+
+    /**
      * Handle file upload via POST
      */
+    #[Route(HttpMethod::POST, '/api/upload', name: 'upload.store')]
     public function upload(RequestInterface $request): ResponseInterface
     {
         // Check if file was uploaded
@@ -63,6 +81,7 @@ class FileUploadController
     /**
      * Delete uploaded file via DELETE
      */
+    #[Route(HttpMethod::DELETE, '/api/upload/{path}', name: 'upload.delete')]
     public function delete(RequestInterface $request, string $path): ResponseInterface
     {
         // Decode path parameter
@@ -92,11 +111,11 @@ class FileUploadController
     }
 
     /**
-     * Show upload form (for testing)
+     * Get upload form HTML
      */
-    public function showForm(RequestInterface $request): ResponseInterface
+    private function getUploadFormHtml(): string
     {
-        $html = '
+        return '
 <!DOCTYPE html>
 <html>
 <head>
@@ -114,7 +133,7 @@ class FileUploadController
 <body>
     <h1>📁 File Upload Test</h1>
     
-    <form action="/api/upload" method="post" enctype="multipart/form-data">
+    <form action="/upload/api/upload" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="file">Select File:</label>
             <input type="file" id="file" name="file" accept="image/*" required>
@@ -142,10 +161,5 @@ class FileUploadController
     </div>
 </body>
 </html>';
-
-        return (new Response())
-            ->withStatus(200)
-            ->withHeader('Content-Type', 'text/html; charset=utf-8')
-            ->write($html);
     }
 }
