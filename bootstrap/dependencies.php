@@ -14,6 +14,8 @@ use Psr\Container\ContainerInterface;
 use App\Infrastructure\Logging\CompositeLogger;
 use App\Infrastructure\Health\HealthCheckService;
 use App\Presentation\Controller\HealthController;
+use App\Infrastructure\Event\DomainEventDispatcher;
+use App\Infrastructure\Event\LoggingEventSubscriber;
 
 /** @var array<string,mixed> $settings */
 $settings = require_once __DIR__ . '/config.php';
@@ -45,7 +47,8 @@ $container = Container::build($settings, [
     FileUploadService::class => fn(Container $c) => new FileUploadService(
         $c->get(FileStorageInterface::class),
         $c->get('settings')['upload']['max_size'],
-        $c->get('settings')['upload']['allowed_types']
+        $c->get('settings')['upload']['allowed_types'],
+        $c->get(DomainEventDispatcher::class)
     ),
     // Template Engine
     TemplateEngine::class => fn() => new TemplateEngine(
@@ -59,6 +62,18 @@ $container = Container::build($settings, [
     // Health Controller
     HealthController::class => fn(Container $c) => new HealthController(
         $c->get(HealthCheckService::class)
+    ),
+    // Event Subscriber
+    LoggingEventSubscriber::class => fn(Container $c) => new LoggingEventSubscriber(
+        $c->get(LoggerInterface::class)
+    ),
+    // Domain Event Dispatcher
+    DomainEventDispatcher::class => fn(Container $c) => new DomainEventDispatcher(
+        $c,
+        [
+            // List of subscriber classes to dispatch events to
+            LoggingEventSubscriber::class,
+        ]
     ),
 ]);
 

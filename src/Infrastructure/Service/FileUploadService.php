@@ -8,6 +8,8 @@ use App\Infrastructure\Service\FileUploadException;
 use App\Infrastructure\Service\FileSizeException;
 use App\Infrastructure\Service\FileTypeException;
 use App\Infrastructure\Service\FileCorruptedException;
+use App\Infrastructure\Event\DomainEventDispatcher;
+use App\Domain\Event\FileUploadedEvent;
 
 /**
  * FileUploadService
@@ -29,11 +31,13 @@ class FileUploadService
      * @param FileStorageInterface $storage The storage service to use for saving files
      * @param int $maxSizeBytes Maximum allowed file size in bytes (default 2MB)
      * @param array $allowedMime List of allowed MIME types (default ['image/png', 'image/jpeg'])
+     * @param DomainEventDispatcher|null $eventDispatcher Event dispatcher for domain events
      */
     public function __construct(
         private FileStorageInterface $storage,
         private int $maxSizeBytes = 2_000_000,
-        private array $allowedMime = ['image/png', 'image/jpeg']
+        private array $allowedMime = ['image/png', 'image/jpeg'],
+        private ?DomainEventDispatcher $eventDispatcher = null
     ) {}
 
     /**
@@ -77,6 +81,13 @@ class FileUploadService
         }
 
         $this->storage->put($path, $content);
+        
+        // Dispatch domain event
+        if ($this->eventDispatcher !== null) {
+            $event = new FileUploadedEvent($filename, $path, $file['size'], $file['type']);
+            $this->eventDispatcher->dispatch($event);
+        }
+        
         return $path;
     }
 
