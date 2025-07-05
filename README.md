@@ -24,7 +24,7 @@ A 100% home-grown PHP micro-framework template implementing DDD and Clean Archit
   - Seeders runner (`seeders/`)
   - Combined `bin/db-setup` for migrate + seed
 - **Validation**
-  - `ValidatorInterface`, built-in rules (`NotEmpty`, `MinLength`)
+  - Automatic validation using PHP 8 attributes (`#[Required]`, `#[Email]`, `#[MinLength]`, `#[MaxLength]`)
   - `AutoValidationMiddleware` with attribute-based validation returning 422 with field-level errors
 - **Authentication & Authorization**
   - Password hashing (`BcryptHasher`)
