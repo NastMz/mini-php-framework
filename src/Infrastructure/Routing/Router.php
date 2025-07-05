@@ -66,7 +66,7 @@ class Router
         ResponseInterface $res
     ): ResponseInterface {
         $method = HttpMethod::tryFrom($rawMethod)
-            ?? throw new \RuntimeException("Unsupported HTTP method: {$rawMethod}");
+            ?? throw new MethodNotAllowedException($rawMethod);
 
         foreach ($this->routes as $route) {
             if ($route->method !== $method) {

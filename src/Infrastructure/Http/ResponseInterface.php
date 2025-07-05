@@ -36,6 +36,15 @@ interface ResponseInterface
     public function write(string $body): static;
 
     /**
+     * Set the response body as JSON.
+     *
+     * @param mixed $data The data to encode as JSON.
+     * @param int $status The HTTP status code (optional).
+     * @return static A new instance with JSON body and appropriate header.
+     */
+    public function withJson($data, int $status = 200): static;
+
+    /**
      * Send the response to the client.
      *
      * This method outputs the HTTP headers and body content to the client.

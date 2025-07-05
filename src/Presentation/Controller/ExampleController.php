@@ -6,6 +6,7 @@ namespace App\Presentation\Controller;
 use App\Infrastructure\Http\RequestInterface;
 use App\Infrastructure\Http\ResponseInterface;
 use App\Infrastructure\Security\AppSecurity;
+use App\Infrastructure\Security\EncryptionException;
 use App\Infrastructure\Config\EnvLoader;
 
 /**
@@ -57,6 +58,9 @@ class ExampleController
         try {
             $encrypted = AppSecurity::encrypt($data);
             return $response->withJson(['encrypted' => $encrypted]);
+        } catch (EncryptionException $e) {
+            // Let the middleware handle this as 400 Bad Request
+            throw $e;
         } catch (\Exception $e) {
             return $response->withJson(['error' => $e->getMessage()], 500);
         }
@@ -80,6 +84,9 @@ class ExampleController
         try {
             $decrypted = AppSecurity::decrypt($encryptedData);
             return $response->withJson(['decrypted' => $decrypted]);
+        } catch (EncryptionException $e) {
+            // Let the middleware handle this as 400 Bad Request
+            throw $e;
         } catch (\Exception $e) {
             return $response->withJson(['error' => $e->getMessage()], 500);
         }

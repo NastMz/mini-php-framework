@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Security;
 
 use App\Infrastructure\Config\EnvLoader;
+use App\Infrastructure\Config\ConfigurationException;
 
 /**
  * AppSecurity
@@ -26,7 +27,7 @@ class AppSecurity
             self::$key = EnvLoader::get('APP_KEY');
             
             if (empty(self::$key)) {
-                throw new \RuntimeException('APP_KEY is not set. Run: php bin/console key:generate');
+                throw new ConfigurationException('APP_KEY is not set. Run: php bin/console key:generate');
             }
         }
 
@@ -41,6 +42,10 @@ class AppSecurity
         $key = self::getKey();
         $iv = random_bytes(16);
         $encrypted = openssl_encrypt($data, 'AES-256-CBC', base64_decode($key), 0, $iv);
+        
+        if ($encrypted === false) {
+            throw new EncryptionException('Failed to encrypt data');
+        }
         
         return base64_encode($iv . $encrypted);
     }
@@ -58,7 +63,7 @@ class AppSecurity
         $decrypted = openssl_decrypt($encrypted, 'AES-256-CBC', base64_decode($key), 0, $iv);
         
         if ($decrypted === false) {
-            throw new \RuntimeException('Failed to decrypt data');
+            throw new EncryptionException('Failed to decrypt data');
         }
         
         return $decrypted;
