@@ -9,6 +9,7 @@ use App\Infrastructure\Http\ResponseInterface;
 use App\Infrastructure\Templating\TemplateEngine;
 use App\Infrastructure\Routing\Attributes\Route;
 use App\Infrastructure\Routing\HttpMethod;
+use App\Infrastructure\Security\CsrfTokenManager;
 
 /**
  * Home Controller

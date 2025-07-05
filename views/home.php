@@ -38,6 +38,10 @@ Mini Framework PHP - Home
                 <strong>🔐 JWT Authentication Test</strong>
                 <span>Prueba los endpoints de autenticación JWT</span>
             </a>
+            <a href="/upload-test" class="test-link">
+                <strong>📁 File Upload Test</strong>
+                <span>Prueba la subida de archivos con drag & drop</span>
+            </a>
         </div>
     </div>
     
