@@ -1,5 +1,5 @@
 composer.phar
 /vendor/
 logs/
-storage/
+/storage/
 .env

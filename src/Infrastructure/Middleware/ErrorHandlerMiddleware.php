@@ -12,6 +12,10 @@ use App\Infrastructure\Routing\MethodNotAllowedException;
 use App\Infrastructure\Validation\ValidationException;
 use App\Infrastructure\Security\EncryptionException;
 use App\Infrastructure\Config\ConfigurationException;
+use App\Infrastructure\Service\FileUploadException;
+use App\Infrastructure\Service\FileSizeException;
+use App\Infrastructure\Service\FileTypeException;
+use App\Infrastructure\Service\FileCorruptedException;
 
 /**
  * ErrorHandlerMiddleware
@@ -39,6 +43,54 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     {
         try {
             return $next->handle($request);
+        } catch (FileSizeException $e) {
+            // Handle 413 Payload Too Large
+            $this->logger->info('File too large', [
+                'message' => $e->getMessage(),
+                'requestId' => $request->getAttribute('requestId'),
+            ]);
+
+            $response = new Response();
+            return $response
+                ->withStatus(413)
+                ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
+                ->write(json_encode([
+                    'error' => 'Payload Too Large',
+                    'message' => $e->getMessage(),
+                    'requestId' => $request->getAttribute('requestId'),
+                ]));
+        } catch (FileTypeException $e) {
+            // Handle 415 Unsupported Media Type
+            $this->logger->info('Unsupported file type', [
+                'message' => $e->getMessage(),
+                'requestId' => $request->getAttribute('requestId'),
+            ]);
+
+            $response = new Response();
+            return $response
+                ->withStatus(415)
+                ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
+                ->write(json_encode([
+                    'error' => 'Unsupported Media Type',
+                    'message' => $e->getMessage(),
+                    'requestId' => $request->getAttribute('requestId'),
+                ]));
+        } catch (FileCorruptedException | FileUploadException $e) {
+            // Handle 422 Unprocessable Entity for file corruption and other upload issues
+            $this->logger->info('File upload error', [
+                'message' => $e->getMessage(),
+                'requestId' => $request->getAttribute('requestId'),
+            ]);
+
+            $response = new Response();
+            return $response
+                ->withStatus(422)
+                ->withHeader('Content-Type', self::CONTENT_TYPE_JSON)
+                ->write(json_encode([
+                    'error' => 'Unprocessable Entity',
+                    'message' => $e->getMessage(),
+                    'requestId' => $request->getAttribute('requestId'),
+                ]));
         } catch (ConfigurationException $e) {
             // Handle 503 Service Unavailable for configuration issues
             $this->logger->error('Configuration error', [

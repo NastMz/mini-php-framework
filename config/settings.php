@@ -38,4 +38,9 @@ return [
         'password' => EnvLoader::get('MAIL_PASSWORD'),
         'encryption' => EnvLoader::get('MAIL_ENCRYPTION', 'tls'),
     ],
+    'upload' => [
+        'max_size' => (int)EnvLoader::get('UPLOAD_MAX_SIZE', '10485760'), // 10 MB
+        'allowed_types' => explode(',', EnvLoader::get('UPLOAD_ALLOWED_TYPES', 'image/jpeg,image/png,image/gif')),
+        'storage_path' => EnvLoader::get('UPLOAD_STORAGE_PATH', __DIR__ . '/../storage/uploads'),
+    ],
 ];
