@@ -75,4 +75,15 @@ class LocalFileStorage implements FileStorageInterface
         $full = rtrim($this->baseDir, '/') . '/' . ltrim($path, '/');
         return file_exists($full);
     }
+
+    /**
+     * Get the full path to a file or directory.
+     *
+     * @param string $path
+     * @return string
+     */
+    public function getPath(string $path): string
+    {
+        return rtrim($this->baseDir, '/') . '/' . ltrim($path, '/');
+    }
 }

@@ -41,4 +41,12 @@ interface FileStorageInterface
      * @return bool
      */
     public function exists(string $path): bool;
+
+    /**
+     * Get the full path to a file or directory.
+     *
+     * @param string $path
+     * @return string
+     */
+    public function getPath(string $path): string;
 }

@@ -62,6 +62,17 @@
             </div>
         </div>
         
+        <div class="files-section">
+            <h4>📁 Archivos Subidos</h4>
+            <div class="files-actions">
+                <button class="btn btn-info" id="loadFilesBtn">🔄 Cargar Archivos</button>
+                <button class="btn btn-secondary" id="clearFilesBtn">🗑️ Limpiar Lista</button>
+            </div>
+            <div id="filesList" class="files-list">
+                <p class="no-files">Haz clic en "Cargar Archivos" para ver los archivos subidos.</p>
+            </div>
+        </div>
+        
         <div id="uploadResult" class="upload-result"></div>
     </div>
 </div>

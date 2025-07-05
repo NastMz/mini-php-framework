@@ -131,4 +131,59 @@ class FileUploadController
                 'message' => 'File deleted successfully',
             ]));
     }
+
+    /**
+     * List uploaded files
+     */
+    #[Route(HttpMethod::GET, '/api/upload/list', name: 'upload.list')]
+    public function listFiles(): ResponseInterface
+    {
+        try {
+            // Get all files from storage directories
+            $directories = ['uploads', 'avatars', 'documents'];
+            $files = [];
+            
+            foreach ($directories as $directory) {
+                $directoryPath = $this->storage->getPath($directory);
+                if (is_dir($directoryPath)) {
+                    $dirFiles = scandir($directoryPath);
+                    foreach ($dirFiles as $file) {
+                        if ($file !== '.' && $file !== '..' && is_file($directoryPath . '/' . $file)) {
+                            $filePath = $directory . '/' . $file;
+                            $files[] = [
+                                'name' => $file,
+                                'path' => $filePath,
+                                'url' => $this->storage->url($filePath),
+                                'directory' => $directory,
+                                'size' => filesize($directoryPath . '/' . $file),
+                                'modified' => date('Y-m-d H:i:s', filemtime($directoryPath . '/' . $file))
+                            ];
+                        }
+                    }
+                }
+            }
+            
+            // Sort by modification time (newest first)
+            usort($files, function($a, $b) {
+                return strcmp($b['modified'], $a['modified']);
+            });
+            
+            return (new Response())
+                ->withStatus(200)
+                ->withHeader('Content-Type', self::JSON_CONTENT_TYPE)
+                ->write(json_encode([
+                    'success' => true,
+                    'data' => $files,
+                    'total' => count($files)
+                ]));
+        } catch (\Exception $e) {
+            return (new Response())
+                ->withStatus(500)
+                ->withHeader('Content-Type', self::JSON_CONTENT_TYPE)
+                ->write(json_encode([
+                    'success' => false,
+                    'message' => 'Error al listar archivos: ' . $e->getMessage()
+                ]));
+        }
+    }
 }
