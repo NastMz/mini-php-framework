@@ -43,4 +43,19 @@ return [
         'allowed_types' => explode(',', EnvLoader::get('UPLOAD_ALLOWED_TYPES', 'image/jpeg,image/png,image/gif')),
         'storage_path' => EnvLoader::get('UPLOAD_STORAGE_PATH', __DIR__ . '/../storage/uploads'),
     ],
+    'cors' => [
+        'origins' => explode(',', EnvLoader::get('CORS_ORIGINS', 'http://localhost:3000,http://localhost:8080')),
+        'methods' => explode(',', EnvLoader::get('CORS_METHODS', 'GET,POST,PUT,DELETE,OPTIONS')),
+        'headers' => explode(',', EnvLoader::get('CORS_HEADERS', 'Content-Type,Authorization,X-Requested-With')),
+        'credentials' => EnvLoader::get('CORS_CREDENTIALS', 'false') === 'true',
+    ],
+    'security' => [
+        'headers' => [
+            'X-Frame-Options' => EnvLoader::get('SECURITY_FRAME_OPTIONS', 'DENY'),
+            'X-Content-Type-Options' => EnvLoader::get('SECURITY_CONTENT_TYPE_OPTIONS', 'nosniff'),
+            'X-XSS-Protection' => EnvLoader::get('SECURITY_XSS_PROTECTION', '1; mode=block'),
+            'Referrer-Policy' => EnvLoader::get('SECURITY_REFERRER_POLICY', 'strict-origin-when-cross-origin'),
+            'Content-Security-Policy' => EnvLoader::get('SECURITY_CSP', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:"),
+        ],
+    ],
 ];
