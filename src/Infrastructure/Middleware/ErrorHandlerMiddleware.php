@@ -7,6 +7,7 @@ use App\Infrastructure\Http\RequestInterface;
 use App\Infrastructure\Http\Response;
 use App\Infrastructure\Http\ResponseInterface;
 use App\Infrastructure\Logging\LoggerInterface;
+use App\Infrastructure\Routing\RouteNotFoundException;
 
 /**
  * ErrorHandlerMiddleware
@@ -32,7 +33,24 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     {
         try {
             return $next->handle($request);
+        } catch (RouteNotFoundException $e) {
+            // Handle 404 Not Found
+            $this->logger->info('Route not found', [
+                'message' => $e->getMessage(),
+                'requestId' => $request->getAttribute('requestId'),
+            ]);
+
+            $response = new Response();
+            return $response
+                ->withStatus(404)
+                ->withHeader('Content-Type', 'application/json')
+                ->write(json_encode([
+                    'error' => 'Not Found',
+                    'message' => 'The requested resource was not found',
+                    'requestId' => $request->getAttribute('requestId'),
+                ]));
         } catch (\Throwable $e) {
+            // Handle other exceptions as 500 Internal Server Error
             $context = [
                 'exception' => get_class($e),
                 'message'   => $e->getMessage(),

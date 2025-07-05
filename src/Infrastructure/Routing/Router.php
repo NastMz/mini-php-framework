@@ -108,6 +108,6 @@ class Router
                 : $res;
         }
 
-        throw new \RuntimeException("No route found for {$rawMethod} {$rawPath}");
+        throw new RouteNotFoundException($rawMethod, $rawPath);
     }
 }
