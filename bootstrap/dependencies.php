@@ -8,7 +8,7 @@ use App\Infrastructure\Logging\LoggerInterface;
 use App\Infrastructure\Templating\TemplateEngine;
 use App\Infrastructure\Database\DatabaseHelper;
 use Psr\Container\ContainerInterface;
-use App\Infrastructure\Logging\FileLogger;
+use App\Infrastructure\Logging\CompositeLogger;
 
 /** @var array<string,mixed> $settings */
 $settings = require_once __DIR__ . '/config.php';
@@ -30,7 +30,7 @@ $container = Container::build($settings, [
         $c->get('settings')['rate_limit']['max_requests'] ?? 60,
         $c->get('settings')['rate_limit']['window_size'] ?? 60
     ),
-    LoggerInterface::class => fn() => new FileLogger(__DIR__ . '/../logs/app.log'),
+    LoggerInterface::class => fn() => new CompositeLogger(__DIR__ . '/../logs/app.log'),
     TemplateEngine::class => fn() => new TemplateEngine(
         __DIR__ . '/../views',
         __DIR__ . '/../storage/cache/templates'

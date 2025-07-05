@@ -42,4 +42,12 @@ interface LoggerInterface
      * @param array $context Additional context for the log message.
      */
     public function debug(string $message, array $context = []): void;
+
+    /**
+     * Logs a warning message.
+     *
+     * @param string $message The log message.
+     * @param array $context Additional context for the log message.
+     */
+    public function warn(string $message, array $context = []): void;
 }

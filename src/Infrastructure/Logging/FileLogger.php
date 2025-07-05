@@ -79,4 +79,15 @@ class FileLogger implements LoggerInterface
     {
         $this->log('debug', $message, $context);
     }
+
+    /**
+     * Logs a warning message.
+     *
+     * @param string $message The log message.
+     * @param array $context Additional context for the log message.
+     */
+    public function warn(string $message, array $context = []): void
+    {
+        $this->log('warn', $message, $context);
+    }
 }
