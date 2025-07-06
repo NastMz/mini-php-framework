@@ -73,10 +73,16 @@ class Router
                 continue;
             }
 
-            // Build regex from pathPattern (e.g. /user/{id})
-            $regex = '#^' .
-                preg_replace('#\{(\w+)\}#', '(?P<$1>[^/]+)', $route->pathPattern) .
-                '$#';
+            // Build regex from pathPattern (e.g. /user/{id} or /files/{path:.*})
+            $regex = '#^' . preg_replace_callback(
+                '#\{(\w+)(?::([^}]+))?\}#',
+                function($matches) {
+                    $paramName = $matches[1];
+                    $pattern = $matches[2] ?? '[^/]+'; // Default pattern excludes slashes
+                    return "(?P<{$paramName}>{$pattern})";
+                },
+                $route->pathPattern
+            ) . '$#';
 
             if (!preg_match($regex, $rawPath, $matches)) {
                 continue;

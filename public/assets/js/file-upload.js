@@ -325,7 +325,7 @@ function deleteFile(filePath) {
     
     const encodedPath = encodeURIComponent(filePath);
     
-    fetch(API_BASE + '/api/upload?path=' + encodedPath, {
+    fetch(API_BASE + '/api/upload/' + encodedPath, {
         method: 'DELETE',
         headers: {
             'X-CSRF-Token': CSRF_TOKEN
