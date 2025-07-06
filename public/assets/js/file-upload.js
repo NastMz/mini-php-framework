@@ -289,13 +289,22 @@ function displayFiles(files) {
                 </div>
                 <div class="file-actions">
                     <a href="${fileUrl}" class="file-link" target="_blank">👁️ Ver</a>
-                    <button class="file-delete" onclick="deleteFile('${escapeHtml(file.path)}')">🗑️</button>
+                    <button class="file-delete" data-file-path="${escapeHtml(file.path)}">🗑️</button>
                 </div>
             </div>
         `;
     });
     
     filesList.innerHTML = html;
+    
+    // Add event listeners to delete buttons
+    const deleteButtons = filesList.querySelectorAll('.file-delete');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filePath = this.getAttribute('data-file-path');
+            deleteFile(filePath);
+        });
+    });
 }
 
 /**
@@ -316,7 +325,7 @@ function deleteFile(filePath) {
     
     const encodedPath = encodeURIComponent(filePath);
     
-    fetch(API_BASE + '/api/upload/' + encodedPath, {
+    fetch(API_BASE + '/api/upload?path=' + encodedPath, {
         method: 'DELETE',
         headers: {
             'X-CSRF-Token': CSRF_TOKEN

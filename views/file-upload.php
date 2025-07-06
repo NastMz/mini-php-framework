@@ -58,7 +58,7 @@
             <div class="method-section">
                 <h5>⚡ Subida AJAX</h5>
                 <button class="btn btn-secondary" id="ajaxUploadBtn">Probar Subida AJAX</button>
-                <input type="file" id="ajaxFile" accept="image/*" style="display: none;">
+                <input type="file" id="ajaxFile" accept="image/*">
             </div>
         </div>
         

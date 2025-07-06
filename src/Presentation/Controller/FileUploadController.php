@@ -103,11 +103,24 @@ class FileUploadController
     /**
      * Delete uploaded file via DELETE
      */
-    #[Route(HttpMethod::DELETE, '/api/upload/{path}', name: 'upload.delete')]
-    public function delete(string $path): ResponseInterface
+    #[Route(HttpMethod::DELETE, '/api/upload', name: 'upload.delete')]
+    public function delete(): ResponseInterface
     {
+        // Get path from query parameter
+        $filePath = $_GET['path'] ?? '';
+        
+        if (empty($filePath)) {
+            return (new Response())
+                ->withStatus(400)
+                ->withHeader('Content-Type', self::JSON_CONTENT_TYPE)
+                ->write(json_encode([
+                    'error' => 'Bad Request',
+                    'message' => 'File path is required',
+                ]));
+        }
+        
         // Decode path parameter
-        $filePath = urldecode($path);
+        $filePath = urldecode($filePath);
         
         // Check if file exists
         if (!$this->storage->exists($filePath)) {
