@@ -1,6 +1,8 @@
 # MiniFramework PHP
 
-A personal learning project - a PHP micro-framework built from scratch to explore Domain-Driven Design (DDD) and Clean Architecture princ## 🚀 Create New Projects
+A personal learning project - a PHP micro-framework built from scratch to explore Domain-Driven Design (DDD) and Clean Architecture principles.
+
+## 🚀 Create New Projects
 
 MiniFramework PHP offers multiple ways to create new projects quickly:
 
@@ -8,7 +10,7 @@ MiniFramework PHP offers multiple ways to create new projects quickly:
 
 Install the global installer once and create projects from anywhere:
 
-```bash
+````bash
 # Install globally via Composer
 composer global require miniframework/installer
 
@@ -16,7 +18,6 @@ composer global require miniframework/installer
 miniframework new my-project
 miniframework new my-api --namespace=MyApi --path=/var/www/api
 miniframework new blog --description="My personal blog"
-```
 
 **Quick Installation:**
 
@@ -26,11 +27,107 @@ curl -sSL https://raw.githubusercontent.com/miniframework/installer/main/install
 
 # Windows (PowerShell)
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/miniframework/installer/main/install.bat" -OutFile "install.bat" && .\install.bat
+````
+
+### Using CLI Command (from framework directory)
+
+```bash
+# Create a basic project
+php bin/console create:project my-new-project
+
+# Create with custom options
+php bin/console create:project my-api --path=/var/www/my-api --namespace=MyApi
 ```
 
-### Using CLI Command (from framework directory). Created as an academic exercise to understand framework internals and modern PHP 8.4+ features.
+### Using Standalone Script
 
-> **⚠️ Educational Project Notice**: This framework was developed for learning purposes and academic curiosity. It is not intended for production use. The goal was to understand how modern frameworks work under the hood and to practice implementing design patterns like DDD and Clean Architecture.
+```bash
+# PHP script (cross-platform)
+php create-miniframework-project.php my-project
+
+# PowerShell script (Windows)
+.\create-miniframework-project.ps1 "my-project"
+
+# Batch file (Windows)
+create-miniframework-project.bat my-project
+```
+
+**What it creates automatically:**
+
+- ✅ Complete project structure with proper architecture
+- ✅ Updated namespaces and composer.json
+- ✅ Environment configuration templates
+- ✅ Git repository with appropriate .gitignore
+- ✅ Installed dependencies
+- ✅ Generated README with project-specific instructions
+
+📖 **[Detailed Generator Documentation](GENERATOR_README.md)**
+
+---
+
+## 🛠️ Installation
+
+### Requirements
+
+- PHP 8.4+
+- Composer
+- SQLite (included with PHP)
+
+### Quick Start
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/NastMz/mini-php-framework.git
+   cd mini-php-framework
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   composer install
+   ```
+
+3. **Generate application key**
+
+   ```bash
+   php bin/console key:generate
+   ```
+
+4. **Initialize database**
+
+   ```bash
+   php bin/console db:init
+   php bin/console migrate
+   ```
+
+5. **Start development server**
+
+   ```bash
+   php bin/console serve
+   ```
+
+6. **Visit your application**
+   Open `http://localhost:8000` in your browser
+
+### Production Setup
+
+1. **Configure environment**
+
+   - Edit `config/settings.php` with production values
+   - Set up environment variables for sensitive data
+
+2. **Set up web server**
+
+   - Point DocumentRoot to `public/` directory
+   - Enable URL rewriting (Apache: `mod_rewrite`)
+
+3. **Optimize for production**
+
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   php bin/console cache:clear
+   ```
 
 ---
 
