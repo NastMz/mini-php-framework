@@ -19,6 +19,7 @@ use App\Infrastructure\Console\Commands\HealthCheckCommand;
 use App\Infrastructure\Console\Commands\DatabaseInitCommand;
 use App\Infrastructure\Console\Commands\TestCommand;
 use App\Infrastructure\Console\Commands\GenerateJwtSecretCommand;
+use App\Infrastructure\Console\Commands\CreateProjectCommand;
 use App\Infrastructure\Logging\LoggerInterface;
 
 // Load environment variables
@@ -43,6 +44,7 @@ $app->addCommand(new GenerateJwtSecretCommand());
 $app->addCommand(new HealthCheckCommand());
 $app->addCommand(new DatabaseInitCommand());
 $app->addCommand(new TestCommand());
+$app->addCommand(new CreateProjectCommand());
 
 // Run the application
 exit($app->run($argv));

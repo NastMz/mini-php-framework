@@ -1,6 +1,34 @@
 # MiniFramework PHP
 
-A personal learning project - a PHP micro-framework built from scratch to explore Domain-Driven Design (DDD) and Clean Architecture principles. Created as an academic exercise to understand framework internals and modern PHP 8.4+ features.
+A personal learning project - a PHP micro-framework built from scratch to explore Domain-Driven Design (DDD) and Clean Architecture princ## 🚀 Create New Projects
+
+MiniFramework PHP offers multiple ways to create new projects quickly:
+
+### 🌍 Global Installer (Recommended - Laravel Style)
+
+Install the global installer once and create projects from anywhere:
+
+```bash
+# Install globally via Composer
+composer global require miniframework/installer
+
+# Create projects from anywhere
+miniframework new my-project
+miniframework new my-api --namespace=MyApi --path=/var/www/api
+miniframework new blog --description="My personal blog"
+```
+
+**Quick Installation:**
+
+```bash
+# Unix/Linux/macOS
+curl -sSL https://raw.githubusercontent.com/miniframework/installer/main/install.sh | bash
+
+# Windows (PowerShell)
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/miniframework/installer/main/install.bat" -OutFile "install.bat" && .\install.bat
+```
+
+### Using CLI Command (from framework directory). Created as an academic exercise to understand framework internals and modern PHP 8.4+ features.
 
 > **⚠️ Educational Project Notice**: This framework was developed for learning purposes and academic curiosity. It is not intended for production use. The goal was to understand how modern frameworks work under the hood and to practice implementing design patterns like DDD and Clean Architecture.
 
@@ -86,6 +114,7 @@ A personal learning project - a PHP micro-framework built from scratch to explor
 
 - **Full-Featured CLI** with command registration system
 - **Code Generators** for controllers, migrations, seeders, middleware
+- **Project Scaffolding** with `create:project` command for new applications
 - **Database Management** commands (migrate, seed, rollback)
 - **Development Server** with configurable host/port
 - **Cache Management** and route listing
@@ -157,7 +186,47 @@ project-root/
 
 ---
 
-## 🛠️ Installation
+## � Create New Projects
+
+MiniFramework PHP includes powerful scaffolding tools to create new projects quickly:
+
+### Using CLI Command (from framework directory)
+
+```bash
+# Create a basic project
+php bin/console create:project my-new-project
+
+# Create with custom options
+php bin/console create:project my-api --path=/var/www/my-api --namespace=MyApi
+```
+
+### Using Standalone Script
+
+```bash
+# PHP script (cross-platform)
+php create-miniframework-project.php my-project
+
+# PowerShell script (Windows)
+.\create-miniframework-project.ps1 "my-project"
+
+# Batch file (Windows)
+create-miniframework-project.bat my-project
+```
+
+**What it creates automatically:**
+
+- ✅ Complete project structure with proper architecture
+- ✅ Updated namespaces and composer.json
+- ✅ Environment configuration templates
+- ✅ Git repository with appropriate .gitignore
+- ✅ Installed dependencies
+- ✅ Generated README with project-specific instructions
+
+📖 **[Detailed Generator Documentation](GENERATOR_README.md)**
+
+---
+
+## �🛠️ Installation
 
 ### Requirements
 

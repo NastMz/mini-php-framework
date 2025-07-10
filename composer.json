@@ -24,7 +24,8 @@
     "serve": "php bin/console serve",
     "migrate": "php bin/console migrate",
     "cache:clear": "php bin/console cache:clear",
-    "key:generate": "php bin/console key:generate"
+    "key:generate": "php bin/console key:generate",
+    "create:project": "php create-miniframework-project.php"
   },
   "license": "MIT"
 }
